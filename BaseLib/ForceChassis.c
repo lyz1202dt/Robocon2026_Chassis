@@ -28,7 +28,7 @@ void ChassisCalculateProcess(void *param)
         uint8_t safe_check=0;
         for(int i=0;i<4;i++)
         {
-            WheelState state=chassis->wheel[i]->state_cb(&chassis->wheel[i]);
+            WheelState state=chassis->wheel[i]->state_cb(chassis->wheel[i]);
             if(state==WHEEL_HEALTH)   //轮子正常
                 safe_check=safe_check|(0x01<<i);
             else if(state==WHEEL_IDEL)  //如果是空闲模式，请求执行复位
