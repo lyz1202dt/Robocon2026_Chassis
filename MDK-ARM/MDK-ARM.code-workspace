@@ -1,0 +1,21 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.associations": {
+            "slope.h": "c",
+            "odriveuart.h": "c",
+            "remotecontrol.h": "c",
+            "chassiscontrol.h": "c",
+            "stm32f4xx_hal.h": "c",
+            "candrive.h": "c",
+            "watchdog2.h": "c",
+            "freertos.h": "c",
+            "cmsis_os.h": "c"
+        }
+    },
+    "extensions": {}
+}
