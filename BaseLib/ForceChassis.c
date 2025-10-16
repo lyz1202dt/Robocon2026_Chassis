@@ -72,7 +72,7 @@ void ChassisCalculateProcess(void *param)
             else
                 torque_projection = 0.0f;
 
-            chassis->wheel[i]->set_target_cb(&chassis->wheel[i], exp_dir[i], exp_vel[i], torque_projection);
+            chassis->wheel[i]->set_target_cb(chassis->wheel[i], exp_dir[i], exp_vel[i], torque_projection);
         }
 
         // 正解部分:
