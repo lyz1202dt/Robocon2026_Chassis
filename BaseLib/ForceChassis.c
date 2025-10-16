@@ -32,17 +32,17 @@ void ChassisCalculateProcess(void *param)
             if(state==WHEEL_HEALTH)   //轮子正常
                 safe_check=safe_check|(0x01<<i);
             else if(state==WHEEL_IDEL)  //如果是空闲模式，请求执行复位
-                chassis->wheel[i]->reset_cb(&chassis->wheel[i]);
+                chassis->wheel[i]->reset_cb(chassis->wheel[i]);
             else if(state==WHEEL_ERROR) //轮子出现错误，执行底盘回调通知应用层
             {
-                chassis->wheel_err_cb(chassis,&chassis->wheel[i]);
+                chassis->wheel_err_cb(chassis,chassis->wheel[i]);
             }
         }
 
         if(safe_check!=0x0F)    //如果底盘异常，那么稍后重新检查
         {
             for(int i=0;i<4;i++)    //底盘异常，设置所有的输出均为0
-                chassis->wheel[i]->set_target_cb(&chassis->wheel[i],0.0f,0.0f,0.0f);
+                chassis->wheel[i]->set_target_cb(chassis->wheel[i],0.0f,0.0f,0.0f);
             vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(50));
             continue;
         }
@@ -79,7 +79,7 @@ void ChassisCalculateProcess(void *param)
 
         for (int i = 0; i < 4; i++) //获取轮子当前的速度，填写矩阵b
         {
-            Vector2D temp = chassis->wheel[i]->get_vel_cb(&chassis->wheel[i]);
+            Vector2D temp = chassis->wheel[i]->get_vel_cb(chassis->wheel[i]);
             cur_vel[2 * i][0] = temp.x;
             cur_vel[2 * i + 1][0] = temp.y;
         }
