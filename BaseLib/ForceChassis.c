@@ -139,5 +139,5 @@ uint32_t ChassisInit(Chassis_t *chassis, Wheel_t *wheel, Vector2D barycenter, fl
     arm_mat_init_f32(&chassis->force_A_mat,3,8,(float*)&chassis->force_A_data);
     arm_mat_trans_f32(&chassis->vel_A_mat,&chassis->force_A_mat);       //计算动力学映射矩阵
 
-    xTaskCreate(ChassisCalculateProcess, "chassis_task", task_stack_size, chassis, task_priority, &task_handle);
+    return xTaskCreate(ChassisCalculateProcess, "chassis_task", task_stack_size, chassis, task_priority, &task_handle);
 }
