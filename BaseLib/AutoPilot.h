@@ -27,6 +27,8 @@ typedef struct{
 
 #endif
 
+typedef struct AutoPilotReq_t AutoPilotReq_t;
+
 typedef enum{
     AUTOPILOT_STAGE_IDEL,       //自动驾驶仪断开
     AUTOPILOT_STAGE_RUNNING,    //运动中
@@ -59,7 +61,7 @@ typedef struct{
 }MathSolver_t;                  //轨迹优化数学求解器参数
 
 
-typedef struct{
+struct AutoPilotReq_t{
     Vector3D target_pos;      //目标位置        //起/终点地位置/速度/加速度约束
     Vector3D target_vel;      //速度
     Vector3D target_acc;      //末端加速度
@@ -71,7 +73,7 @@ typedef struct{
 
     FinishedCallback_t finish_cb;   //回调函数参数
     void* user_data;                //回调函数参数
-}AutoPilotReq_t;                    //运动目标规结构体
+};                    //运动目标规结构体
 
 
 typedef struct{
