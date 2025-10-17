@@ -38,7 +38,7 @@ typedef enum{
 typedef void(*SetRobotPosCallback_t)(Vector3D pos);
 typedef void(*SetRobotVelCallback_t)(Vector3D vel);
 typedef void(*SetRobotAccCallback_t)(Vector3D acc);
-typedef void(*FinishedCallback_t)(AutopilotState state,void* user_data);                //执行导航结束回调函数
+typedef void(*FinishedCallback_t)(AutopilotState state,AutoPilotReq_t *req,void* user_data);                //执行导航结束回调函数
 
 
 

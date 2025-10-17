@@ -117,7 +117,7 @@ static void AutoPilotProcess(void *param)
             xQueueReset(handle->runReqQueue);
         }
         if(current_req.finish_cb)
-            current_req.finish_cb(handle->currentState, current_req.user_data);
+            current_req.finish_cb(handle->currentState, &current_req,current_req.user_data);
     }
 }
 
