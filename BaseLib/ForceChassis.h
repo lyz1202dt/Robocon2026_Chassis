@@ -5,7 +5,7 @@
 #include "svd.h"
 
 typedef enum{
-    WHEEL_IDEL,         //轮子不会对指令做出相应
+    WHEEL_IDEL,         //轮子不会对指令做出响应
     WHEEL_HEALTH,       //轮子全部功能正常
     WHEEL_RESETING,     //轮子正在复位
     WHEEL_ERROR         //轮子异常，影响正常使用，一般尝试复位指令
