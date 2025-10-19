@@ -7,8 +7,7 @@ void SetWheelTarget_Callback(Wheel_t *_this, float rad, float velocity, float fo
     steeringwheel->expectDirection = RAD2ANGLE(rad);
     steeringwheel->expextVelocity = velocity;
     steeringwheel->expextForce  = force;
-
-    MinorArcDeal(steeringwheel);
+	
 }
 
 void WheelReset_Callback(Wheel_t *_this)
