@@ -63,18 +63,15 @@ struct Chassis_t{
     float I;                //机器人绕底盘坐标原点作自旋运动时的转动惯量
     float dead_zone;        //速度死区，防止短时间舵轮期望角度发生剧变
 
-
     //输入/输出部分
     Vector3D exp_vel;           //底盘期望
     Vector3D exp_acc;
     Vector3D cur_vel;           //底盘实际
-
     
-
-    uint32_t update_dt_ms;      //控制周期
+    //控制周期
+    uint32_t update_dt_ms;      
 
     //数学部分：
-
     //控制映射矩阵(在初始化底盘时预计算且不会再改变)
     arm_matrix_instance_f32 force_A_mat;
     float force_A_data[3][8];

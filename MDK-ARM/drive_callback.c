@@ -29,7 +29,26 @@ WheelState WheelState_Callback(Wheel_t *_this)
         return WHEEL_RESETING;
 }
 
+Vector2D GetWheelVelocity_Callback(Wheel_t *_this)
+{
+    SteeringWheel *pSteWhe = (SteeringWheel *)_this->user_data;
 
+    Vector2D velocity;
+    velocity.x = pSteWhe->DriveMotor.rpm / 60.0f * 2.0f * 3.1415926f * n * wheel_radius * cosf(ANGLE2RAD(pSteWhe->currentDirection));
+    velocity.y = pSteWhe->DriveMotor.rpm / 60.0f * 2.0f * 3.1415926f * n * wheel_radius * sinf(ANGLE2RAD(pSteWhe->currentDirection));
+    return velocity;
+}
+
+void WheelError_Callback(Chassis_t *_this, Wheel_t *wheel)
+{
+    SteeringWheel *pSteWhe = (SteeringWheel *)wheel->user_data;
+    HAL_GPIO_WritePin(pSteWhe->error_GPIO_Port, pSteWhe->error_GPIO_Pin, GPIO_PIN_SET);
+}
+
+uint8_t SteeringWheelReady(SteeringWheel *StrWhe)
+{
+    return StrWhe->ready_edge_flag >> 7;
+}
 
 void LimitAngle(float* angle)
 {
