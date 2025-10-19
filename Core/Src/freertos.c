@@ -26,9 +26,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "semphr.h"
-#include "ChassisControl.h"
-#include "RemoteControl.h"
-#include "Action.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -132,12 +129,7 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
-	xTaskCreate(ChassisControl,"ChassisCtrl",512,NULL,4,&chassis_task_handle);
-	xTaskCreate(UartRecvTask,"Connect",128,NULL,6,&rubbsh);
-	xTaskCreate(SwitchMoveMode,"switch1",64,NULL,3,&rubbsh);
-	xTaskCreate(SwitchJumpMode,"switch2",64,NULL,3,&rubbsh);
-	xTaskCreate(SwitchLaunchMode,"switch3",64,NULL,3,&rubbsh);
-	
+
   /* USER CODE END RTOS_THREADS */
 
 }

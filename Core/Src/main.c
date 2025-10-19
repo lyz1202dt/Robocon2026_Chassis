@@ -27,13 +27,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
 #include "RMLibHead.h"
 #include "CANDRive.h"
-#include "motor.h"
-#include "RemoteControl.h"
-#include "SteeringWheel.h"
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

@@ -12,8 +12,6 @@
                 "d:\\Keil_Project\\Robocon2026_Chassis_Frame\\Drivers\\CMSIS\\Device\\ST\\STM32F4xx\\Include",
                 "d:\\Keil_Project\\Robocon2026_Chassis_Frame\\Drivers\\CMSIS\\Include",
                 "d:\\Keil_Project\\Robocon2026_Chassis_Frame\\BaseLib",
-                "d:\\Keil_Project\\Robocon2026_Chassis_Frame\\SteeringWheel",
-                "d:\\Keil_Project\\Robocon2026_Chassis_Frame\\MyTask",
                 "d:\\Keil_Project\\Robocon2026_Chassis_Frame\\Bsp",
                 "d:\\Keil_Project\\Robocon2026_Chassis_Frame\\Middlewares\\ST\\ARM\\DSP\\Inc",
                 "d:\\Keil_Project\\Robocon2026_Chassis_Frame\\Eigen",

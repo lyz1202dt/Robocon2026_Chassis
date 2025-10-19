@@ -8,7 +8,7 @@
 #include "motor.h"
 #include "vesc.h"
 
-#define PI 3.1415926536f
+#define PI 3.14159265358979f
 #define ANGLE2RAD(x) (x) * PI / 180.0f
 #define RAD2ANGLE(x) (x) * 180.0f / PI
 #define n 3.0f //减速比

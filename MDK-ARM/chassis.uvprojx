@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../BaseLib;../SteeringWheel;../MyTask;../Bsp;../Middlewares/ST/ARM/DSP/Inc;../Eigen;..\Matrix</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../BaseLib;../Bsp;../Middlewares/ST/ARM/DSP/Inc;../Eigen;..\Matrix;..\MDK-ARM</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -683,20 +683,25 @@
               <FileType>5</FileType>
               <FilePath>..\BaseLib\ForceChassis.h</FilePath>
             </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>SterringWheel</GroupName>
-          <Files>
             <File>
-              <FileName>SteeringWheel.c</FileName>
+              <FileName>drive_callback.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\SteeringWheel\SteeringWheel.c</FilePath>
+              <FilePath>.\drive_callback.c</FilePath>
             </File>
             <File>
-              <FileName>SteeringWheel.h</FileName>
+              <FileName>drive_callback.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\SteeringWheel\SteeringWheel.h</FilePath>
+              <FilePath>.\drive_callback.h</FilePath>
+            </File>
+            <File>
+              <FileName>vesc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BaseLib\vesc.c</FilePath>
+            </File>
+            <File>
+              <FileName>vesc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\BaseLib\vesc.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1331,41 +1336,6 @@
                   </Cads>
                 </FileArmAds>
               </FileOption>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>MyTask</GroupName>
-          <Files>
-            <File>
-              <FileName>ChassisControl.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\MyTask\ChassisControl.h</FilePath>
-            </File>
-            <File>
-              <FileName>RemoteControl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MyTask\RemoteControl.c</FilePath>
-            </File>
-            <File>
-              <FileName>RemoteControl.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\MyTask\RemoteControl.h</FilePath>
-            </File>
-            <File>
-              <FileName>Action.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MyTask\Action.c</FilePath>
-            </File>
-            <File>
-              <FileName>Action.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\MyTask\Action.h</FilePath>
-            </File>
-            <File>
-              <FileName>ChassisControl.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MyTask\ChassisControl.c</FilePath>
             </File>
           </Files>
         </Group>
