@@ -1,4 +1,5 @@
 #include "Task_Init.h"
+#include "JY61.h"
 
 SteeringWheel steeringWheelArray[4];
 Wheel_t wheelArray[4];
@@ -97,8 +98,12 @@ void Wheel_Task(void *pvParameters)
 
 Vector3D cur_pos;
 Vector3D exp_pos;
-PID2 Pos_PID;
-PID2 Vel_PID;
+Vector3D exp_vel;
+PID2 Pos_PID_x;
+PID2 Pos_PID_y;
+PID2 Pos_PID_z;
+JY61_Typedef JY61;
+uint8_t Gyro_Rx_Buffer[22];
 
 void AutoPilot_Task(void *pvParameters)
 {
@@ -106,9 +111,21 @@ void AutoPilot_Task(void *pvParameters)
 
     for(;;)
     {
-        PID_Control2(cur_pos.x, exp_pos.x, &Pos_PID);
-        PID_Control2(cur_pos.y, exp_pos.y, &Pos_PID);
-        
+        JY61_Receive(&JY61, Gyro_Rx_Buffer, sizeof(Gyro_Rx_Buffer));
+        PID_Control2(cur_pos.x, exp_pos.x, &Pos_PID_x);
+        PID_Control2(cur_pos.y, exp_pos.y, &Pos_PID_y);
+        PID_Control2(cur_pos.z, exp_pos.z, &Pos_PID_z);
+
+        Vector3D exp_vel_world;
+        exp_vel_world.x = Pos_PID_x.pid_out + exp_vel.x;
+        exp_vel_world.y = Pos_PID_y.pid_out + exp_vel.y;
+        exp_vel_world.z = Pos_PID_z.pid_out + exp_vel.z;
+
+        float c = arm_cos_f32(cur_pos.z);
+        float s = arm_sin_f32(cur_pos.z);
+        chassis.cur_vel.x = exp_vel_world.x * c + exp_vel_world.y * s;
+        chassis.cur_vel.y = exp_vel_world.y * c - exp_vel_world.x * s;
+        chassis.cur_vel.z = exp_vel_world.z;
 
         vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(5));
     }
