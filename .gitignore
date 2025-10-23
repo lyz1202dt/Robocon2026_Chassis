@@ -40,7 +40,7 @@
 /MDK-ARM/chassis/
 /MDK-ARM/DebugConfig/
 /MDK-ARM/RTE/
-
+/MDK-ARM/.vscode/
 
 
 # 杂项 IDE 缓存
