@@ -31,6 +31,19 @@ virtualFolder:
                 - path: ../Core/Src/stm32f4xx_hal_msp.c
                 - path: ../Core/Src/stm32f4xx_hal_timebase_tim.c
               folders: []
+            - name: USB_DEVICE
+              files: []
+              folders:
+                - name: App
+                  files:
+                    - path: ../USB_DEVICE/App/usb_device.c
+                    - path: ../USB_DEVICE/App/usbd_desc.c
+                    - path: ../USB_DEVICE/App/usbd_cdc_if.c
+                  folders: []
+                - name: Target
+                  files:
+                    - path: ../USB_DEVICE/Target/usbd_conf.c
+                  folders: []
     - name: Drivers
       files: []
       folders:
@@ -38,7 +51,9 @@ virtualFolder:
           files:
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c
-            - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c
+            - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd.c
+            - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd_ex.c
+            - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.c
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c
@@ -52,6 +67,7 @@ virtualFolder:
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c
+            - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c
           folders: []
         - name: CMSIS
@@ -73,6 +89,13 @@ virtualFolder:
             - path: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c
             - path: ../Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
             - path: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/port.c
+          folders: []
+        - name: USB_Device_Library
+          files:
+            - path: ../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c
+            - path: ../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c
+            - path: ../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c
+            - path: ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
           folders: []
         - name: Library
           files: []
@@ -113,20 +136,15 @@ virtualFolder:
         - path: ../Matrix/svd.c
         - path: ../Matrix/svd.h
         - path: ../BaseLib/ForceChassis.h
-      folders: []
-    - name: SterringWheel
-      files:
-        - path: ../SteeringWheel/SteeringWheel.c
-        - path: ../SteeringWheel/SteeringWheel.h
-      folders: []
-    - name: MyTask
-      files:
-        - path: ../MyTask/ChassisControl.h
-        - path: ../MyTask/RemoteControl.c
-        - path: ../MyTask/RemoteControl.h
-        - path: ../MyTask/Action.c
-        - path: ../MyTask/Action.h
-        - path: ../MyTask/ChassisControl.c
+        - path: drive_callback.c
+        - path: drive_callback.h
+        - path: ../BaseLib/vesc.c
+        - path: ../BaseLib/vesc.h
+        - path: ../BaseLib/Task_Init.c
+        - path: ../BaseLib/Task_Init.h
+        - path: Pilot_callback.c
+        - path: Pilot_callback.h
+        - path: ../BaseLib/Vector.h
       folders: []
     - name: Matrix
       files:
@@ -156,12 +174,15 @@ targets:
         - ../Drivers/CMSIS/Device/ST/STM32F4xx/Include
         - ../Drivers/CMSIS/Include
         - ../BaseLib
-        - ../SteeringWheel
-        - ../MyTask
         - ../Bsp
         - ../Middlewares/ST/ARM/DSP/Inc
         - ../Eigen
         - ../Matrix
+        - .
+        - ../USB_DEVICE/App
+        - ../USB_DEVICE/Target
+        - ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc
+        - ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc
         - .cmsis/include
         - RTE/_chassis
       libList: []

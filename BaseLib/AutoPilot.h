@@ -16,16 +16,7 @@
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
-
-#ifndef Vector3D
-
-typedef struct{
-    float x;
-    float y;
-    float z;
-}Vector3D;
-
-#endif
+#include "Vector.h"
 
 typedef struct AutoPilotReq_t AutoPilotReq_t;
 
