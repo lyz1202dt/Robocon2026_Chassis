@@ -100,9 +100,7 @@ void ChassisCalculateProcess(void *param)
 uint32_t ChassisInit(Chassis_t *chassis, Wheel_t *wheel, Vector2D barycenter, float mass, float I, float dead_zone, uint32_t update_dt, uint32_t task_stack_size, uint32_t task_priority) // 初始化数学参数并创建任务
 {
     TaskHandle_t task_handle;
-
-    //参数拷贝
-    memcpy(chassis->wheel, wheel, 4 * sizeof(Wheel_t));
+    
     chassis->barycenter = barycenter;
     chassis->mass = mass;
     chassis->I = I;
@@ -115,7 +113,7 @@ uint32_t ChassisInit(Chassis_t *chassis, Wheel_t *wheel, Vector2D barycenter, fl
     chassis->Mq_data[0][1] = chassis->Mq_data[1][0] = 0.0f;
     chassis->Mq_data[0][2] = chassis->Mq_data[2][0] = -chassis->mass * chassis->barycenter.y;
     chassis->Mq_data[1][2] = chassis->Mq_data[2][1] = chassis->mass * chassis->barycenter.x;
-    chassis->Mq_data[2][2] = chassis->I + chassis->mass * chassis->barycenter.x * chassis->barycenter.x + chassis->barycenter.y * chassis->barycenter.y;
+    chassis->Mq_data[2][2] = chassis->I + chassis->mass * chassis->barycenter.x * chassis->barycenter.x +chassis->mass * chassis->barycenter.y * chassis->barycenter.y;
     
     arm_mat_init_f32(&chassis->vel_A_mat,8,3,(float*)&chassis->A_vel_data);     //构建运动学映射矩阵
     for(int i=0;i<4;i++)

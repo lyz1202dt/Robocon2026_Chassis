@@ -26,7 +26,6 @@ typedef struct{
     float y;
 }Vector2D;
 
-
 typedef struct Wheel_t Wheel_t;
 typedef struct Chassis_t Chassis_t;
 
@@ -50,7 +49,6 @@ struct Wheel_t{
     //用户数据
     void* user_data;
 };
-
 
 struct Chassis_t{
     //硬件驱动部分

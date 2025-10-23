@@ -25,7 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "semphr.h"
+#include "Task_Init.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -35,9 +35,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-QueueHandle_t launch_action_semphr;
-QueueHandle_t move_action_semphr;
-QueueHandle_t jump_action_semphr;
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -59,6 +57,7 @@ osThreadId defaultTaskHandle;
 
 void StartDefaultTask(void const * argument);
 
+extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* GetIdleTaskMemory prototype (linked to static allocation support) */
@@ -92,8 +91,7 @@ void vApplicationGetTimerTaskMemory( StaticTask_t **ppxTimerTaskTCBBuffer, Stack
   /* place for user code */
 }
 /* USER CODE END GET_TIMER_TASK_MEMORY */
-TaskHandle_t rubbsh;
-TaskHandle_t chassis_task_handle;
+
 /**
   * @brief  FreeRTOS initialization
   * @param  None
@@ -110,9 +108,6 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
-	launch_action_semphr=xSemaphoreCreateBinary();
-	move_action_semphr=xSemaphoreCreateBinary();
-	jump_action_semphr=xSemaphoreCreateBinary();
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* USER CODE BEGIN RTOS_TIMERS */
@@ -133,7 +128,7 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_THREADS */
 
 }
-uint32_t high_water_mark=0;
+
 /* USER CODE BEGIN Header_StartDefaultTask */
 /**
   * @brief  Function implementing the defaultTask thread.
@@ -143,14 +138,15 @@ uint32_t high_water_mark=0;
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void const * argument)
 {
+  /* init code for USB_DEVICE */
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN StartDefaultTask */
   /* Infinite loop */
-	vTaskDelay(2000);
+	Task_Init();
 	
   for(;;)
   {
-	high_water_mark=uxTaskGetStackHighWaterMark(chassis_task_handle);
-    osDelay(100);
+    osDelay(1);
   }
   /* USER CODE END StartDefaultTask */
 }

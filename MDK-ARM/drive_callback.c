@@ -3,17 +3,16 @@
 void SetWheelTarget_Callback(Wheel_t *_this, float rad, float velocity, float force)
 {
     SteeringWheel *steeringwheel = (SteeringWheel *)_this->user_data;
-
     steeringwheel->expectDirection = RAD2ANGLE(rad);
     steeringwheel->expextVelocity = velocity;
-    steeringwheel->expextForce  = force;
-	
+		MinorArcDeal(steeringwheel);
+		steeringwheel->expextForce  = force * n * wheel_radius * (2.0f * PI * KV / 60.0f) * cosf(ANGLE2RAD(steeringwheel->putoutDirection - steeringwheel->currentDirection));
 }
 
 void WheelReset_Callback(Wheel_t *_this)
 {
     SteeringWheel *pSteWhe = (SteeringWheel *)_this->user_data;
-    pSteWhe->ready_edge_flag = 0xF0; // 复位标志位
+    Reset_Function(pSteWhe);
 }
 
 WheelState WheelState_Callback(Wheel_t *_this)
@@ -134,3 +133,32 @@ void MinorArcDeal(SteeringWheel *motor)
 		motor->putoutVelocity = motor->expextVelocity;*/
 	motor->putoutVelocity=motor->expextVelocity*cos(ANGLE2RAD(temp));
 }
+
+//复位函数
+void Reset_Function(SteeringWheel *pSteWhe)
+{
+    if(!(pSteWhe->ready_edge_flag&0x20))		//第一次执行时，记录角度，如果尚未进行复位，则标记进行一次复位
+	{
+		pSteWhe->ready_edge_flag=pSteWhe->ready_edge_flag|0x20;
+		pSteWhe->ready_edge_flag = pSteWhe->ready_edge_flag | (HAL_GPIO_ReadPin(pSteWhe->Key_GPIO_Port, pSteWhe->Key_GPIO_Pin) << 4);
+	}
+	if (HAL_GPIO_ReadPin(pSteWhe->Key_GPIO_Port, pSteWhe->Key_GPIO_Pin))
+	{
+		pSteWhe->putoutDirection = pSteWhe->putoutDirection - 0.03f;
+	}
+	else
+	{
+		pSteWhe->putoutDirection = pSteWhe->putoutDirection + 0.03f;
+	}
+
+	if ((HAL_GPIO_ReadPin(pSteWhe->Key_GPIO_Port, pSteWhe->Key_GPIO_Pin) << 4) != (pSteWhe->ready_edge_flag & 0x10))	//如果上一次的IO电平与此次不同，那么认为复位成功
+	{
+		pSteWhe->offset = pSteWhe->SteeringMotor.Angle;
+		pSteWhe->putoutDirection = 0.0f;
+		pSteWhe->addoffsetangle=0.0f;
+		pSteWhe->ready_edge_flag = pSteWhe->ready_edge_flag | 0x80;
+	}
+	pSteWhe->ready_edge_flag = pSteWhe->ready_edge_flag & (~0x10);
+	pSteWhe->ready_edge_flag = pSteWhe->ready_edge_flag | (HAL_GPIO_ReadPin(pSteWhe->Key_GPIO_Port, pSteWhe->Key_GPIO_Pin) << 4);
+}
+

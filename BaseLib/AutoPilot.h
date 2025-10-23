@@ -42,8 +42,6 @@ typedef void(*SetRobotVelCallback_t)(Vector3D vel);
 typedef void(*SetRobotAccCallback_t)(Vector3D acc);
 typedef void(*FinishedCallback_t)(AutopilotState state,AutoPilotReq_t *req,void* user_data);                //执行导航结束回调函数
 
-
-
 typedef struct{
     float a;
     float b;
@@ -60,7 +58,6 @@ typedef struct{
     int max_iter_count;        //最大迭代次数
 }MathSolver_t;                  //轨迹优化数学求解器参数
 
-
 struct AutoPilotReq_t{
     Vector3D target_pos;      //目标位置        //起/终点地位置/速度/加速度约束
     Vector3D target_vel;      //速度
@@ -75,7 +72,6 @@ struct AutoPilotReq_t{
     void* user_data;                //回调函数参数
 };                    //运动目标规结构体
 
-
 typedef struct{
     PathLine_t x_line;  //归一化后的x坐标关于时间的曲线
     PathLine_t y_line;
@@ -86,13 +82,11 @@ typedef struct{
     void* user_data;                //回调函数参数
 }MoveDest_t;  //运动规划结构体
 
-
 typedef struct{
     SetRobotPosCallback_t setPos_cb;
     SetRobotVelCallback_t setVel_cb;
     SetRobotAccCallback_t setAcc_cb;
 }AutoPilotCallback_t;                   //接口回调函数组
-
 
 typedef struct{
     AutoPilotCallback_t callBack;   //接口回调函数组
@@ -102,13 +96,11 @@ typedef struct{
     uint32_t dt_ms;                       //自动驾驶仪更新时间
 }AutoPilot_t;
 
-
 #define ZERO_VECTOR() (Vector3D){.x=0.0f,.y=0.0f,.z=0.0f}
 
 #define PositiveValue(x) ((x)>0?(x):0)
 
 #define AUTOPILOT_DEFAULT_SOLVER_PARAM() (MathSolver_t){.iter_rate=0.1f,.max_iter_count=50,.over_limit_gate=0.05f,.step_dt=0.05f}
-
 
 /**
  * @brief   初始化自动驾驶仪
@@ -155,6 +147,5 @@ inline void AutoPilotSendTrajectoryToPilot(AutoPilot_t *handle,MoveDest_t *dest)
 {
     xQueueSend(handle->runReqQueue,dest,0);
 };
-
 
 #endif

@@ -6,4 +6,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+void Task_Init(void);
+void Wheel_Task(void *pvParameters);
+
 #endif
