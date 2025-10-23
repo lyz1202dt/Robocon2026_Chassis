@@ -98,6 +98,7 @@ void Wheel_Task(void *pvParameters)
 Vector3D cur_pos;
 Vector3D exp_pos;
 PID2 Pos_PID;
+PID2 Vel_PID;
 
 void AutoPilot_Task(void *pvParameters)
 {
