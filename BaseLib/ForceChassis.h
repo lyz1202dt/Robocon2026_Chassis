@@ -3,6 +3,7 @@
 
 #include "arm_math.h"
 #include "svd.h"
+#include "Vector.h"
 
 typedef enum{
     WHEEL_IDEL,         //轮子不会对指令做出响应
@@ -11,20 +12,6 @@ typedef enum{
     WHEEL_ERROR         //轮子异常，影响正常使用，一般尝试复位指令
 }WheelState;
 
-#ifndef Vector3D
-
-typedef struct{
-    float x;
-    float y;
-    float z;
-}Vector3D;
-
-#endif
-
-typedef struct{
-    float x;
-    float y;
-}Vector2D;
 
 typedef struct Wheel_t Wheel_t;
 typedef struct Chassis_t Chassis_t;

@@ -1,8 +1,13 @@
 #include "AutoPilot.h"
 
 
-static inline void set_quintic(PathLine_t *line, float p0, float v0, float a0, float pT, float vT, float aT)
+static inline void set_quintic(PathLine_t *line, float p0, float v0, float a0, float pT, float vT, float aT,float dt)
 {
+    v0=v0*dt;       //速度/加速度参数归一化
+    a0=a0*dt*dt;
+    vT=vT*dt;
+    aT=aT*dt*dt;
+
     line->a = p0;
     line->b = v0;
     line->c = 0.5 * a0;
@@ -124,9 +129,9 @@ static void AutoPilotProcess(void *param)
 float AutoPilotTrajectoryPlane(AutoPilotReq_t *req, MoveDest_t *dest, float vel_limit, float acc_limit, float omega_limit, float acc_omega_limit, float run_time,MathSolver_t *solver) // 根据期望位置和约束条件计算曲线，如果不满足那么进行数值迭代尽可能找到一个可行的曲线
 {
     PathLine_t line[3];
-    set_quintic(&line[0], req->start_pos.x, req->start_vel.x, req->start_acc.x, req->target_pos.x, req->target_vel.x, req->target_acc.x);
-    set_quintic(&line[1], req->start_pos.y, req->start_vel.y, req->start_acc.y, req->target_pos.y, req->target_vel.y, req->target_acc.y);
-    set_quintic(&line[2], req->start_pos.z, req->start_vel.z, req->start_acc.z, req->target_pos.z, req->target_vel.z, req->target_acc.z);
+    set_quintic(&line[0], req->start_pos.x, req->start_vel.x, req->start_acc.x, req->target_pos.x, req->target_vel.x, req->target_acc.x,run_time);
+    set_quintic(&line[1], req->start_pos.y, req->start_vel.y, req->start_acc.y, req->target_pos.y, req->target_vel.y, req->target_acc.y,run_time);
+    set_quintic(&line[2], req->start_pos.z, req->start_vel.z, req->start_acc.z, req->target_pos.z, req->target_vel.z, req->target_acc.z,run_time);
     
     float vel_value[3] = {0.0f, 0.0f, 0.0f};
     float acc_value[3] = {0.0f, 0.0f, 0.0f};
