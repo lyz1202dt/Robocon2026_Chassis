@@ -30,6 +30,7 @@
 /* USER CODE BEGIN Includes */
 #include "RMLibHead.h"
 #include "CANDRive.h"
+#include "encoder.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,7 +51,10 @@ extern CAN_HandleTypeDef hcan2;
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+extern Encoder_HandleTypeDef encoderA;
+extern Encoder_HandleTypeDef encoderB;
+extern Encoder_HandleTypeDef encoderC;
+extern Encoder_HandleTypeDef encoderD;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -103,11 +107,13 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM1_Init();
   MX_UART5_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_2);
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_3);
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_4);
+  HAL_TIM_Base_Start_IT(&htim7);
   CanFilter_Init(&hcan1);
   CanFilter_Init(&hcan2);
   
@@ -203,6 +209,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
     HAL_IncTick();
   }
+	
+  if(htim->Instance == TIM7)
+  {
+    Encoder_Update(&encoderA, 0.002f);
+    Encoder_Update(&encoderB, 0.002f);
+    Encoder_Update(&encoderC, 0.002f);
+    Encoder_Update(&encoderD, 0.002f);
+  }
+
   /* USER CODE BEGIN Callback 1 */
   /* USER CODE END Callback 1 */
 }

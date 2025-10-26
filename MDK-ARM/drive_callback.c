@@ -81,6 +81,7 @@ float AngleDiffer(float angle1,float angle2)
 // 自适应: 适应各种角度场景，从微小调整到大角度旋转
 void MinorArcDeal(SteeringWheel *motor)
 {
+	//float currentAngle = (float)(motor->encoder.angle_deg) / 4.0f ;	//2006减速比为36/1
 	float currentAngle = (float)(motor->SteeringMotor.Angle - motor->addoffsetangle - motor->offset) * 10 / 4.0f / 8192.0f;	//2006减速比为36/1，这里的10其实是(360/36)
 	float actualTargetAngle = (float)(180 * ((int8_t)(currentAngle / 180.0f))) + motor->expectDirection;
 	float D_angle = AngleDiffer(actualTargetAngle, currentAngle); // 在同一周期内求旋转角
@@ -137,7 +138,7 @@ void MinorArcDeal(SteeringWheel *motor)
 //复位函数
 void Reset_Function(SteeringWheel *pSteWhe)
 {
-    if(!(pSteWhe->ready_edge_flag&0x20))		//第一次执行时，记录角度，如果尚未进行复位，则标记进行一次复位
+  if(!(pSteWhe->ready_edge_flag&0x20))		//第一次执行时，记录角度，如果尚未进行复位，则标记进行一次复位
 	{
 		pSteWhe->ready_edge_flag=pSteWhe->ready_edge_flag|0x20;
 		pSteWhe->ready_edge_flag = pSteWhe->ready_edge_flag | (HAL_GPIO_ReadPin(pSteWhe->Key_GPIO_Port, pSteWhe->Key_GPIO_Pin) << 4);

@@ -7,6 +7,7 @@
 #include "pid_old.h"
 #include "motor.h"
 #include "vesc.h"
+#include "encoder.h"
 
 #define PI 3.14159265358979f
 #define ANGLE2RAD(x) (x) * PI / 180.0f
@@ -40,6 +41,9 @@ typedef struct
   GPIO_TypeDef *error_GPIO_Port; // 故障指示引脚端口
   uint16_t error_GPIO_Pin;       // 故障指示引脚号
   uint8_t ready_edge_flag;     // 舵轮处于奇点附近，舵轮已经复位（0b G000 HIJK）
+
+  Encoder_HandleTypeDef encoder; // 编码器读取2006角度
+
 } SteeringWheel;
 
 void SetWheelTarget_Callback(Wheel_t *_this, float rad, float velocity, float force);
