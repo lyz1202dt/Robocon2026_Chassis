@@ -62,6 +62,7 @@ extern QueueHandle_t remote_semaphore;
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
+extern SPI_HandleTypeDef hspi2;
 extern TIM_HandleTypeDef htim7;
 extern DMA_HandleTypeDef hdma_uart4_rx;
 extern DMA_HandleTypeDef hdma_uart4_tx;
@@ -204,34 +205,6 @@ void EXTI1_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles EXTI line2 interrupt.
-  */
-void EXTI2_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI2_IRQn 0 */
-
-  /* USER CODE END EXTI2_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_2);
-  /* USER CODE BEGIN EXTI2_IRQn 1 */
-
-  /* USER CODE END EXTI2_IRQn 1 */
-}
-
-/**
-  * @brief This function handles EXTI line3 interrupt.
-  */
-void EXTI3_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI3_IRQn 0 */
-
-  /* USER CODE END EXTI3_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_3);
-  /* USER CODE BEGIN EXTI3_IRQn 1 */
-
-  /* USER CODE END EXTI3_IRQn 1 */
-}
-
-/**
   * @brief This function handles EXTI line4 interrupt.
   */
 void EXTI4_IRQHandler(void)
@@ -343,6 +316,20 @@ void EXTI9_5_IRQHandler(void)
   /* USER CODE BEGIN EXTI9_5_IRQn 1 */
 
   /* USER CODE END EXTI9_5_IRQn 1 */
+}
+
+/**
+  * @brief This function handles SPI2 global interrupt.
+  */
+void SPI2_IRQHandler(void)
+{
+  /* USER CODE BEGIN SPI2_IRQn 0 */
+
+  /* USER CODE END SPI2_IRQn 0 */
+  HAL_SPI_IRQHandler(&hspi2);
+  /* USER CODE BEGIN SPI2_IRQn 1 */
+
+  /* USER CODE END SPI2_IRQn 1 */
 }
 
 /**

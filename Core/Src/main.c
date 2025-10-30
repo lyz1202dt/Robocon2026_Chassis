@@ -21,6 +21,7 @@
 #include "cmsis_os.h"
 #include "can.h"
 #include "dma.h"
+#include "spi.h"
 #include "tim.h"
 #include "usart.h"
 #include "usb_device.h"
@@ -108,6 +109,7 @@ int main(void)
   MX_TIM1_Init();
   MX_UART5_Init();
   MX_TIM7_Init();
+  MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_2);
@@ -209,15 +211,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
     HAL_IncTick();
   }
-	
-  if(htim->Instance == TIM7)
-  {
-    Encoder_Update(&encoderA, 0.002f);
-    Encoder_Update(&encoderB, 0.002f);
-    Encoder_Update(&encoderC, 0.002f);
-    Encoder_Update(&encoderD, 0.002f);
-  }
-
   /* USER CODE BEGIN Callback 1 */
   /* USER CODE END Callback 1 */
 }

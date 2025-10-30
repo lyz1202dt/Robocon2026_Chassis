@@ -1,6 +1,8 @@
 #include "Task_Init.h"
 #include "JY61.h"
 #include "encoder.h"
+#include "AS5047.h"
+#include "spi.h"
 
 SteeringWheel steeringWheelArray[4];
 Wheel_t wheelArray[4];
@@ -32,15 +34,15 @@ void Task_Init(void)
 	  Encoder_Init(&encoderA, GPIOB, GPIO_PIN_0, GPIOB, GPIO_PIN_1, 8000, 1.0f, 0.6f);
     Encoder_Init(&encoderB, GPIOC, GPIO_PIN_2, GPIOC, GPIO_PIN_3, 8000, 1.0f, 0.6f);
     Encoder_Init(&encoderC, GPIOC, GPIO_PIN_4, GPIOC, GPIO_PIN_5, 8000, 1.0f, 0.6f);
-    Encoder_Init(&encoderD, GPIOA, GPIO_PIN_8, GPIOA, GPIO_PIN_9, 8000, 1.0f, 0.6f);
+    Encoder_Init(&encoderD, GPIOA, GPIO_PIN_8, GPIOC, GPIO_PIN_9, 8000, 1.0f, 0.6f);
 	
     steeringWheelArray[0].Key_GPIO_Port = GPIOA;
     steeringWheelArray[0].Key_GPIO_Pin = GPIO_PIN_7;
-    steeringWheelArray[1].Key_GPIO_Port = GPIOC;
+    steeringWheelArray[1].Key_GPIO_Port = GPIOA;
     steeringWheelArray[1].Key_GPIO_Pin = GPIO_PIN_5;
     steeringWheelArray[2].Key_GPIO_Port = GPIOA;
     steeringWheelArray[2].Key_GPIO_Pin = GPIO_PIN_6;
-    steeringWheelArray[3].Key_GPIO_Port = GPIOC;
+    steeringWheelArray[3].Key_GPIO_Port = GPIOA;
     steeringWheelArray[3].Key_GPIO_Pin = GPIO_PIN_4;
     
     steeringWheelArray[0].encoder = encoderA;
@@ -138,12 +140,22 @@ PID2 Pos_PID_z;
 extern JY61_Typedef JY61;
 uint8_t Gyro_Rx_Buffer[22];
 
+AS5047P_HandleTypeDef sensors[4];
+float sensor_angles[4];
+
 void Move_Task(void *pvParameters)
 {
     TickType_t last_wake_time = xTaskGetTickCount();
 
+    AS5047P_Init(&sensors[0], &hspi2, GPIOB, GPIO_PIN_12);
+    AS5047P_Init(&sensors[1], &hspi2, GPIOB, GPIO_PIN_12);
+    AS5047P_Init(&sensors[2], &hspi2, GPIOB, GPIO_PIN_12);
+    AS5047P_Init(&sensors[3], &hspi2, GPIOB, GPIO_PIN_12);
+
     for(;;)
     {
+        AS5047P_ReadAllSensors(sensors, sensor_angles, 4);
+
         if(xSemaphoreTake(remote_semaphore, pdMS_TO_TICKS(200)) == pdTRUE)
         {
             memcpy(&RemoteData, usart4_dma_buff, sizeof(RemoteData));
@@ -204,3 +216,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     Encoder_Event(&encoderD, GPIO_Pin);
 }
 
+void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *hspi)
+{
+   if(hspi->Instance == SPI2)
+   {
+        for(int i = 0; i < 4; i++)
+        {
+            AS5047P_ResetAngle(&sensors[i]);
+        }
+   }
+}
