@@ -22,5 +22,6 @@ typedef struct
 void AS5047P_Init(AS5047P_HandleTypeDef *sensor, SPI_HandleTypeDef *hspi, GPIO_TypeDef *cs_port, uint16_t cs_pin);
 float AS5047P_ReadContinuousAngle(AS5047P_HandleTypeDef *sensor);
 void AS5047P_ReadALLSensors(AS5047P_HandleTypeDef sensors[], float angles[], uint8_t sensor_count);
+void AS5047P_ResetAngle(AS5047P_HandleTypeDef *sensor);
 
 #endif

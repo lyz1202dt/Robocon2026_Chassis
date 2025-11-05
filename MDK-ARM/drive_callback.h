@@ -6,7 +6,7 @@
 #include "Task.h"
 #include "pid_old.h"
 #include "motor.h"
-#include "vesc.h"
+#include "Odrive.h"
 #include "encoder.h"
 
 #define PI 3.14159265358979f
@@ -15,10 +15,11 @@
 #define n 3.0f //减速比
 #define wheel_radius 0.05f //轮子半径，单位m
 #define KV 170.0f //电机KV值
+#define VEL_TRANSFORM (10.0f/(3.0f*3.14159265f*0.096f)) //将m/s速度转换为电机r/s
 
 typedef struct
 {
-  VESC_t DriveMotor;           // 8311电机
+  ODrive DriveMotor;           // 5055电机
   M2006_TypeDef SteeringMotor; // M2006电机
   PID2 Steering_Dir_PID; // 转向电机PID角度环控制器
   PID2 Steering_Vel_PID; // 转向电机PID速度环控制器

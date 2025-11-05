@@ -6,7 +6,7 @@ void SetWheelTarget_Callback(Wheel_t *_this, float rad, float velocity, float fo
     steeringwheel->expectDirection = RAD2ANGLE(rad);
     steeringwheel->expextVelocity = velocity;
 		MinorArcDeal(steeringwheel);
-		steeringwheel->expextForce  = force * n * wheel_radius * (2.0f * PI * KV / 60.0f) * cosf(ANGLE2RAD(steeringwheel->putoutDirection - steeringwheel->currentDirection));
+	steeringwheel->expextForce  = force * n * wheel_radius * (2.0f * PI * KV / 60.0f) * cosf(ANGLE2RAD(steeringwheel->putoutDirection - steeringwheel->currentDirection));
 }
 
 void WheelReset_Callback(Wheel_t *_this)
@@ -32,8 +32,8 @@ Vector2D GetWheelVelocity_Callback(Wheel_t *_this)
     SteeringWheel *pSteWhe = (SteeringWheel *)_this->user_data;
 
     Vector2D velocity;
-    velocity.x = pSteWhe->DriveMotor.rpm / 60.0f * 2.0f * 3.1415926f * n * wheel_radius * cosf(ANGLE2RAD(pSteWhe->currentDirection));
-    velocity.y = pSteWhe->DriveMotor.rpm / 60.0f * 2.0f * 3.1415926f * n * wheel_radius * sinf(ANGLE2RAD(pSteWhe->currentDirection));
+    velocity.x = pSteWhe->DriveMotor.posVelEstimateGet.velocity * VEL_TRANSFORM * 2.0f * 3.1415926f * n * wheel_radius * cosf(ANGLE2RAD(pSteWhe->currentDirection));
+    velocity.y = pSteWhe->DriveMotor.posVelEstimateGet.velocity * VEL_TRANSFORM * 2.0f * 3.1415926f * n * wheel_radius * sinf(ANGLE2RAD(pSteWhe->currentDirection));
     return velocity;
 }
 

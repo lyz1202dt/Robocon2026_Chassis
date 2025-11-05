@@ -17,24 +17,11 @@ Remote_Handle_t Remote_Control; //取出遥控器数据
 
 extern SemaphoreHandle_t remote_semaphore;
 
-/*
-    编码器结构体
-*/
-Encoder_HandleTypeDef encoderA;
-Encoder_HandleTypeDef encoderB;
-Encoder_HandleTypeDef encoderC;
-Encoder_HandleTypeDef encoderD;
-
 void Task_Init(void)
 {
 	//遥控器
     __HAL_UART_ENABLE_IT(&huart4, UART_IT_IDLE);
     HAL_UART_Receive_DMA(&huart4, usart4_dma_buff, sizeof(usart4_dma_buff));
-
-	  Encoder_Init(&encoderA, GPIOB, GPIO_PIN_0, GPIOB, GPIO_PIN_1, 8000, 1.0f, 0.6f);
-    Encoder_Init(&encoderB, GPIOC, GPIO_PIN_2, GPIOC, GPIO_PIN_3, 8000, 1.0f, 0.6f);
-    Encoder_Init(&encoderC, GPIOC, GPIO_PIN_4, GPIOC, GPIO_PIN_5, 8000, 1.0f, 0.6f);
-    Encoder_Init(&encoderD, GPIOA, GPIO_PIN_8, GPIOC, GPIO_PIN_9, 8000, 1.0f, 0.6f);
 	
     steeringWheelArray[0].Key_GPIO_Port = GPIOA;
     steeringWheelArray[0].Key_GPIO_Pin = GPIO_PIN_7;
@@ -44,11 +31,6 @@ void Task_Init(void)
     steeringWheelArray[2].Key_GPIO_Pin = GPIO_PIN_6;
     steeringWheelArray[3].Key_GPIO_Port = GPIOA;
     steeringWheelArray[3].Key_GPIO_Pin = GPIO_PIN_4;
-    
-    steeringWheelArray[0].encoder = encoderA;
-    steeringWheelArray[1].encoder = encoderB;
-    steeringWheelArray[2].encoder = encoderC;
-    steeringWheelArray[3].encoder = encoderD;
 
     wheelArray[0].pos.x = -0.32f;
     wheelArray[0].pos.y =  0.32f;
@@ -67,7 +49,7 @@ void Task_Init(void)
         wheelArray[i].state_cb = WheelState_Callback;
         wheelArray[i].get_vel_cb = GetWheelVelocity_Callback;
         chassis.wheel[i] = &wheelArray[i];
-        steeringWheelArray[i].DriveMotor.motor_id = i;
+        steeringWheelArray[i].DriveMotor.motorID = i;
         xTaskCreate(Wheel_Task, "wheel_task", 128, &wheelArray[i], 4, &Wheel_Handles[i]);
     }
 
@@ -104,27 +86,40 @@ void Wheel_Task(void *pvParameters)
     swheel->Steering_Dir_PID.limit = 10.0f;
     swheel->Steering_Dir_PID.output_limit = 10000.0f;
 
-    swheel->Driver_Vel_PID.Kp = 5.0f;
+    swheel->Driver_Vel_PID.Kp = 2.0f;
     swheel->Driver_Vel_PID.Ki = 0.0f;
     swheel->Driver_Vel_PID.Kd = 1.0f;
     swheel->Driver_Vel_PID.limit = 10000.0f;
-    swheel->Driver_Vel_PID.output_limit = 50.0f;
+    swheel->Driver_Vel_PID.output_limit = 1.0f;
 
     swheel->offset = 0.0f;
     swheel->maxRotateAngle = 350.0f;
     swheel->floatRotateAngle = 340.0f;
     swheel->ready_edge_flag = 0;
     swheel->addoffsetangle = 0.0f;
-		
+	swheel->expextForce = 0.0f;
+    
+    while(swheel->DriveMotor.heartBeatGet.axisState != 0x08)
+        vTaskDelay(pdMS_TO_TICKS(50));
+
+    //ODrive电机初始化开始
+    int axis_state = ODRIVE_SET_AXIS_STATE_IDLE;
+    ODriveSetAxisState(&swheel->DriveMotor, axis_state);
+    vTaskDelay(1);
+    ODriveSetControlMode(&swheel->DriveMotor, ODRIVE_SET_WOORKMODE_TORQUE_CONTROL|ODRIVE_SET_INPUTMODE_PASSTHROUGH);
+    vTaskDelay(1);
+    axis_state = ODRIVE_SET_AXIS_STATE_CLOSED_LOOP_CONTROL;
+    ODriveSetAxisState(&swheel->DriveMotor, axis_state);
+    vTaskDelay(1);
+
     for(;;)
     {
         PID_Control2(swheel->currentDirection, swheel->putoutDirection, &swheel->Steering_Dir_PID);//角度环
         PID_Control2(swheel->SteeringMotor.Speed, swheel->Steering_Dir_PID.pid_out, &swheel->Steering_Vel_PID);//速度环
 
-        PID_Control2(swheel->DriveMotor.rpm, swheel->expextVelocity * 60.0f / (2.0f * PI * n * wheel_radius), &swheel->Driver_Vel_PID);//驱动电机速度环
-        FinalCurrent = swheel->Driver_Vel_PID.pid_out + swheel->expextForce;
-        VESC_SetCurrent(&swheel->DriveMotor, FinalCurrent);
-
+        PID_Control2(swheel->DriveMotor.posVelEstimateGet.velocity, swheel->putoutVelocity*VEL_TRANSFORM, &swheel->Driver_Vel_PID);
+        ODriveSetTorque(&swheel->DriveMotor, swheel->Driver_Vel_PID.pid_out);
+        
         vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(5));
     }
 }
@@ -147,15 +142,8 @@ void Move_Task(void *pvParameters)
 {
     TickType_t last_wake_time = xTaskGetTickCount();
 
-    AS5047P_Init(&sensors[0], &hspi2, GPIOB, GPIO_PIN_12);
-    AS5047P_Init(&sensors[1], &hspi2, GPIOB, GPIO_PIN_12);
-    AS5047P_Init(&sensors[2], &hspi2, GPIOB, GPIO_PIN_12);
-    AS5047P_Init(&sensors[3], &hspi2, GPIOB, GPIO_PIN_12);
-
     for(;;)
     {
-        AS5047P_ReadAllSensors(sensors, sensor_angles, 4);
-
         if(xSemaphoreTake(remote_semaphore, pdMS_TO_TICKS(200)) == pdTRUE)
         {
             memcpy(&RemoteData, usart4_dma_buff, sizeof(RemoteData));
@@ -206,23 +194,4 @@ void Move_Task(void *pvParameters)
 void UpdateKey(Remote_Handle_t * xx) { //遥控器数据更新
     xx->Second = xx->First;
     xx->First = *xx->Key_Control;
-}
-
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-    Encoder_Event(&encoderA, GPIO_Pin);
-    Encoder_Event(&encoderB, GPIO_Pin);
-    Encoder_Event(&encoderC, GPIO_Pin);
-    Encoder_Event(&encoderD, GPIO_Pin);
-}
-
-void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *hspi)
-{
-   if(hspi->Instance == SPI2)
-   {
-        for(int i = 0; i < 4; i++)
-        {
-            AS5047P_ResetAngle(&sensors[i]);
-        }
-   }
 }
