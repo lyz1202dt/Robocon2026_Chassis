@@ -7,6 +7,7 @@
 #include "pid_old.h"
 #include "motor.h"
 #include "Odrive.h"
+#include "vesc.h"
 #include "encoder.h"
 
 #define PI 3.14159265358979f
@@ -20,20 +21,21 @@
 typedef struct
 {
   ODrive DriveMotor;           // 5055电机
+  // VESC_t DriveMotor;           //8311电机
   M2006_TypeDef SteeringMotor; // M2006电机
   PID2 Steering_Dir_PID; // 转向电机PID角度环控制器
   PID2 Steering_Vel_PID; // 转向电机PID速度环控制器
   PID2 Driver_Vel_PID;   // 驱动电机PID速度环控制器
   float currentDirection;//当前方向角度（°）
+	float D_angle;         //在同一周期内求旋转角
   float expectDirection; //期望方向角度（°）
   float expextVelocity;
   float expextForce;
-  float putoutDirection;
-  float putoutVelocity;
+  float putoutDirection; //弧度
+  float putoutVelocity; // m/s
   float last_expDirection;
 
   float offset;           // 2006电机起始误差
-  float addoffsetangle;   // 2006电机安装误差
   float maxRotateAngle;   // 最大正反转度数
   float floatRotateAngle; // 柔性区间度数（防止因目标值在机械角度限制附近振动导致输出震荡，应当略小于maxRotateAngle大约10~20度）
 
@@ -58,5 +60,5 @@ float AngleDiffer(float angle1,float angle2);
 void MinorArcDeal(SteeringWheel *motor);
 uint8_t SteeringWheelReady(SteeringWheel *StrWhe);
 void Reset_Function(SteeringWheel *pSteWhe);
-
+void Angle_Update(SteeringWheel *motor);
 #endif

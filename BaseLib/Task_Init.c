@@ -10,6 +10,7 @@ Chassis_t chassis;
 
 TaskHandle_t Wheel_Handles[4];
 TaskHandle_t Move_Task_Handle;
+TaskHandle_t Can_Send_Handle;
 
 uint8_t usart4_dma_buff[30];
 UART_DataPack RemoteData;  //将串口接收的数据存到这里
@@ -24,13 +25,13 @@ void Task_Init(void)
     HAL_UART_Receive_DMA(&huart4, usart4_dma_buff, sizeof(usart4_dma_buff));
 	
     steeringWheelArray[0].Key_GPIO_Port = GPIOA;
-    steeringWheelArray[0].Key_GPIO_Pin = GPIO_PIN_7;
-    steeringWheelArray[1].Key_GPIO_Port = GPIOA;
-    steeringWheelArray[1].Key_GPIO_Pin = GPIO_PIN_5;
+    steeringWheelArray[0].Key_GPIO_Pin = GPIO_PIN_6;
+    steeringWheelArray[1].Key_GPIO_Port = GPIOC;
+    steeringWheelArray[1].Key_GPIO_Pin = GPIO_PIN_4;
     steeringWheelArray[2].Key_GPIO_Port = GPIOA;
-    steeringWheelArray[2].Key_GPIO_Pin = GPIO_PIN_6;
+    steeringWheelArray[2].Key_GPIO_Pin = GPIO_PIN_4;
     steeringWheelArray[3].Key_GPIO_Port = GPIOA;
-    steeringWheelArray[3].Key_GPIO_Pin = GPIO_PIN_4;
+    steeringWheelArray[3].Key_GPIO_Pin = GPIO_PIN_7;
 
     wheelArray[0].pos.x = -0.32f;
     wheelArray[0].pos.y =  0.32f;
@@ -49,10 +50,20 @@ void Task_Init(void)
         wheelArray[i].state_cb = WheelState_Callback;
         wheelArray[i].get_vel_cb = GetWheelVelocity_Callback;
         chassis.wheel[i] = &wheelArray[i];
-        steeringWheelArray[i].DriveMotor.motorID = i;
-        xTaskCreate(Wheel_Task, "wheel_task", 128, &wheelArray[i], 4, &Wheel_Handles[i]);
+        steeringWheelArray[i].DriveMotor.motorID = i + 1;
+			  
+        // steeringWheelArray[i].DriveMotor.motor_id = i;
     }
 
+		CanFilter_Init(&hcan1);
+		CanFilter_Init(&hcan2);
+		HAL_CAN_Start(&hcan1); 
+		HAL_CAN_Start(&hcan2);
+		HAL_CAN_ActivateNotification(&hcan1,CAN_IT_RX_FIFO0_MSG_PENDING);
+		HAL_CAN_ActivateNotification(&hcan2,CAN_IT_RX_FIFO1_MSG_PENDING);
+		HAL_CAN_ActivateNotification(&hcan1,CAN_IT_TX_MAILBOX_EMPTY);
+		HAL_CAN_ActivateNotification(&hcan2,CAN_IT_TX_MAILBOX_EMPTY);
+		
     chassis.mass = 10.0f;
     chassis.I = 1.25f;
     chassis.barycenter.x = 0.0f;
@@ -60,13 +71,20 @@ void Task_Init(void)
     chassis.dead_zone = 0.001f;
     chassis.update_dt_ms = 5;
     chassis.wheel_err_cb = WheelError_Callback;
-    ChassisInit(&chassis, wheelArray, chassis.barycenter, chassis.mass, chassis.I, chassis.dead_zone, chassis.update_dt_ms, 512, 4);
-
-    xTaskCreate(Move_Task, "Move_Task", 256, NULL, 5, &Move_Task_Handle);
+    ChassisInit(&chassis, wheelArray, chassis.barycenter, chassis.mass, chassis.I, chassis.dead_zone, chassis.update_dt_ms, 512, 2);
+	
+		xTaskCreate(Wheel_Task, "wheel_task1", 256, &wheelArray[0], 4, &Wheel_Handles[0]);
+		//xTaskCreate(Wheel_Task, "wheel_task1", 256, &wheelArray[1], 4, &Wheel_Handles[1]);
+		//xTaskCreate(Wheel_Task, "wheel_task1", 256, &wheelArray[2], 4, &Wheel_Handles[2]);
+		xTaskCreate(Wheel_Task, "wheel_task1", 256, &wheelArray[3], 4, &Wheel_Handles[3]);
+		
+    //xTaskCreate(Move_Task, "Move_Task", 400, NULL, 3, &Move_Task_Handle);
+		xTaskCreate(Can_Send, "Can_Send", 256, NULL, 4, &Can_Send_Handle);
+		
 }
 
 float FinalCurrent = 0.0f;
-
+int16_t motorCurrentBuf[4] = {0};
 void Wheel_Task(void *pvParameters)
 {
     TickType_t last_wake_time = xTaskGetTickCount();
@@ -91,17 +109,14 @@ void Wheel_Task(void *pvParameters)
     swheel->Driver_Vel_PID.Kd = 1.0f;
     swheel->Driver_Vel_PID.limit = 10000.0f;
     swheel->Driver_Vel_PID.output_limit = 1.0f;
-
+    // swheel->Driver_Vel_PID.output_limit = 20.0f;
     swheel->offset = 0.0f;
     swheel->maxRotateAngle = 350.0f;
     swheel->floatRotateAngle = 340.0f;
     swheel->ready_edge_flag = 0;
-    swheel->addoffsetangle = 0.0f;
-	swheel->expextForce = 0.0f;
+	  swheel->expextForce = 0.0f;
     
-    while(swheel->DriveMotor.heartBeatGet.axisState != 0x08)
-        vTaskDelay(pdMS_TO_TICKS(50));
-
+    vTaskDelay(6000);
     //ODrive电机初始化开始
     int axis_state = ODRIVE_SET_AXIS_STATE_IDLE;
     ODriveSetAxisState(&swheel->DriveMotor, axis_state);
@@ -114,18 +129,48 @@ void Wheel_Task(void *pvParameters)
 
     for(;;)
     {
-        PID_Control2(swheel->currentDirection, swheel->putoutDirection, &swheel->Steering_Dir_PID);//角度环
+				Angle_Update(swheel);
+        PID_Control2(swheel->putoutDirection, swheel->currentDirection, &swheel->Steering_Dir_PID);//角度环
         PID_Control2(swheel->SteeringMotor.Speed, swheel->Steering_Dir_PID.pid_out, &swheel->Steering_Vel_PID);//速度环
-
+				
         PID_Control2(swheel->DriveMotor.posVelEstimateGet.velocity, swheel->putoutVelocity*VEL_TRANSFORM, &swheel->Driver_Vel_PID);
-        ODriveSetTorque(&swheel->DriveMotor, swheel->Driver_Vel_PID.pid_out);
+        // PID_Control2(swheel->DriveMotor.rpm, swheel->putoutVelocity / wheel_radius * 9.549, &swheel->Driver_Vel_PID);
         
         vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(5));
     }
 }
 
-ChassisMode chassis_mode = REMOTE;
+void Can_Send(void *pvParameters)
+{
+		TickType_t last_wake_time = xTaskGetTickCount();
+		
+		for(;;)
+		{
+			motorCurrentBuf[0] = steeringWheelArray[0].Steering_Vel_PID.pid_out;
+			motorCurrentBuf[1] = steeringWheelArray[1].Steering_Vel_PID.pid_out;
+			motorCurrentBuf[2] = steeringWheelArray[2].Steering_Vel_PID.pid_out;
+			motorCurrentBuf[3] = steeringWheelArray[3].Steering_Vel_PID.pid_out;
+			
+			MotorSend(&hcan2, 0x200, motorCurrentBuf);
+			
+			ODriveGetEncoderEstimate(&steeringWheelArray[0].DriveMotor);
+			ODriveSetTorque(&steeringWheelArray[0].DriveMotor, steeringWheelArray[0].Driver_Vel_PID.pid_out);
+			ODriveGetEncoderEstimate(&steeringWheelArray[1].DriveMotor);
+			vTaskDelay(2);
+			ODriveSetTorque(&steeringWheelArray[1].DriveMotor, steeringWheelArray[1].Driver_Vel_PID.pid_out);
+			ODriveGetEncoderEstimate(&steeringWheelArray[2].DriveMotor);
+			ODriveSetTorque(&steeringWheelArray[2].DriveMotor, steeringWheelArray[2].Driver_Vel_PID.pid_out);
+			vTaskDelay(2);
+			ODriveGetEncoderEstimate(&steeringWheelArray[3].DriveMotor);
+			ODriveSetTorque(&steeringWheelArray[3].DriveMotor, steeringWheelArray[3].Driver_Vel_PID.pid_out);
+			
+			// VESC_SetCurrent(&swheel->DriveMotor, swheel->Driver_Vel_PID.pid_out);
+			
+			vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(5));
+		}
+}
 
+ChassisMode chassis_mode = REMOTE;
 Vector3D cur_pos;
 Vector3D exp_pos;
 Vector3D exp_vel;
@@ -184,9 +229,9 @@ void Move_Task(void *pvParameters)
         {
             chassis.exp_vel.x = Remote_Control.Ex / 2047.0f * MAX_ROBOT_VEL; //遥控器控制，最大1.5m/s
             chassis.exp_vel.y = Remote_Control.Ey / 2047.0f * MAX_ROBOT_VEL;
-            chassis.exp_vel.z = Remote_Control.Eomega / 2047.0f * MAX_ROBOT_OMEGA; //最大180度/s
+            chassis.exp_vel.z = Remote_Control.Eomega / 2047.0f * MAX_ROBOT_OMEGA;//弧度/s
         }
-       
+				
         vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(5));
     }
 }
@@ -194,4 +239,42 @@ void Move_Task(void *pvParameters)
 void UpdateKey(Remote_Handle_t * xx) { //遥控器数据更新
     xx->Second = xx->First;
     xx->First = *xx->Key_Control;
+}
+
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
+{
+    if(hcan->Instance == CAN1)
+    {
+        uint8_t Recv[8] = {0};
+        uint32_t ID = CAN_Receive_DataFrame(hcan, Recv);
+	      ODriveRecvServe(&steeringWheelArray[0].DriveMotor, ID, Recv);
+        ODriveRecvServe(&steeringWheelArray[1].DriveMotor, ID, Recv);
+        ODriveRecvServe(&steeringWheelArray[2].DriveMotor, ID, Recv);
+        ODriveRecvServe(&steeringWheelArray[3].DriveMotor, ID, Recv);
+    }
+}
+
+void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) // 接收2006的反馈
+{
+  if (hcan->Instance == CAN2)
+  {
+    uint8_t Recv[8] = {0};
+    uint32_t ID = CAN_Receive_DataFrame(hcan, Recv);
+    if (ID == 0x201) // 左上，象限2
+    {
+      M2006_Receive(&steeringWheelArray[0].SteeringMotor, Recv);
+    }
+    else if (ID == 0x202) // 右上(象限1)
+    {
+      M2006_Receive(&steeringWheelArray[1].SteeringMotor, Recv);
+    }
+    else if (ID == 0x203) // 左下(象限3)
+    {
+      M2006_Receive(&steeringWheelArray[2].SteeringMotor, Recv);
+    }
+    else if (ID == 0x204) // 右下(象限4)
+    {
+      M2006_Receive(&steeringWheelArray[3].SteeringMotor, Recv);
+    }
+  }
 }

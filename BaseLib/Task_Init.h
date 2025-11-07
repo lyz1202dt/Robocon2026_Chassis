@@ -46,7 +46,7 @@ typedef struct {
     int16_t Ex;
     int16_t Ey;
     int16_t Eomega;
-	int16_t mode;
+	  int16_t mode;
     hw_key_t *Key_Control;
     hw_key_t First,Second;
 } Remote_Handle_t;
@@ -60,5 +60,7 @@ typedef enum{
 
 void UpdateKey(Remote_Handle_t * xx);
 void Move_Task(void *pvParameters);
+void Can_Send(void *pvParameters);
+void Wheel_Task(void *pvParameters);
 
 #endif

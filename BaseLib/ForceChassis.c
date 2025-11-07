@@ -97,10 +97,10 @@ void ChassisCalculateProcess(void *param)
     }
 }
 
+TaskHandle_t task_handle;
+
 uint32_t ChassisInit(Chassis_t *chassis, Wheel_t *wheel, Vector2D barycenter, float mass, float I, float dead_zone, uint32_t update_dt, uint32_t task_stack_size, uint32_t task_priority) // 初始化数学参数并创建任务
 {
-    TaskHandle_t task_handle;
-    
     chassis->barycenter = barycenter;
     chassis->mass = mass;
     chassis->I = I;

@@ -116,15 +116,6 @@ int main(void)
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_3);
 	HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_4);
   HAL_TIM_Base_Start_IT(&htim7);
-  CanFilter_Init(&hcan1);
-  CanFilter_Init(&hcan2);
-  
-  HAL_CAN_Start(&hcan1); 
-  HAL_CAN_Start(&hcan2);
-	HAL_CAN_ActivateNotification(&hcan1,CAN_IT_RX_FIFO0_MSG_PENDING);
-  HAL_CAN_ActivateNotification(&hcan2,CAN_IT_RX_FIFO1_MSG_PENDING);
-	HAL_CAN_ActivateNotification(&hcan1,CAN_IT_TX_MAILBOX_EMPTY);
-	HAL_CAN_ActivateNotification(&hcan2,CAN_IT_TX_MAILBOX_EMPTY);
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in cmsis_os2.c) */
