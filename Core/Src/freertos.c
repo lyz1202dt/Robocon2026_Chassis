@@ -37,7 +37,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 SemaphoreHandle_t remote_semaphore;
-SemaphoreHandle_t reset_semaphore;
+SemaphoreHandle_t Jy61_semaphore;
 
 extern TaskHandle_t Wheel_Handles[4];
 extern TaskHandle_t Move_Task_Handle;
@@ -124,7 +124,7 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
   remote_semaphore=xSemaphoreCreateBinary();
-	reset_semaphore =xSemaphoreCreateBinary();
+	Jy61_semaphore =xSemaphoreCreateBinary();
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
@@ -153,9 +153,6 @@ void StartDefaultTask(void const * argument)
   /* USER CODE BEGIN StartDefaultTask */
   /* Infinite loop */
 	Task_Init();
-	
-	
-	
   for(;;)
   {
 		_stack[0]=uxTaskGetStackHighWaterMark(Wheel_Handles[0]);

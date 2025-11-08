@@ -13,10 +13,12 @@ TaskHandle_t Move_Task_Handle;
 TaskHandle_t Can_Send_Handle;
 
 uint8_t usart4_dma_buff[30];
+uint8_t usart5_dma_buff[104];
 UART_DataPack RemoteData;  //将串口接收的数据存到这里
 Remote_Handle_t Remote_Control; //取出遥控器数据
 
 extern SemaphoreHandle_t remote_semaphore;
+extern SemaphoreHandle_t Jy61_semaphore;
 
 void Task_Init(void)
 {
@@ -64,27 +66,20 @@ void Task_Init(void)
 		HAL_CAN_ActivateNotification(&hcan1,CAN_IT_TX_MAILBOX_EMPTY);
 		HAL_CAN_ActivateNotification(&hcan2,CAN_IT_TX_MAILBOX_EMPTY);
 		
-    chassis.mass = 10.0f;
-    chassis.I = 1.25f;
-    chassis.barycenter.x = 0.0f;
-    chassis.barycenter.y = 0.0f;
-    chassis.dead_zone = 0.001f;
-    chassis.update_dt_ms = 5;
+    Vector2D barycenter = {0, 0};
     chassis.wheel_err_cb = WheelError_Callback;
-    ChassisInit(&chassis, wheelArray, chassis.barycenter, chassis.mass, chassis.I, chassis.dead_zone, chassis.update_dt_ms, 512, 2);
+    ChassisInit(&chassis, wheelArray, barycenter, 10.0f, 1.25f, 0.001f, 5, 512, 2);
 	
 		xTaskCreate(Wheel_Task, "wheel_task1", 256, &wheelArray[0], 4, &Wheel_Handles[0]);
-		//xTaskCreate(Wheel_Task, "wheel_task1", 256, &wheelArray[1], 4, &Wheel_Handles[1]);
-		//xTaskCreate(Wheel_Task, "wheel_task1", 256, &wheelArray[2], 4, &Wheel_Handles[2]);
+		xTaskCreate(Wheel_Task, "wheel_task1", 256, &wheelArray[1], 4, &Wheel_Handles[1]);
+		xTaskCreate(Wheel_Task, "wheel_task1", 256, &wheelArray[2], 4, &Wheel_Handles[2]);
 		xTaskCreate(Wheel_Task, "wheel_task1", 256, &wheelArray[3], 4, &Wheel_Handles[3]);
 		
-    //xTaskCreate(Move_Task, "Move_Task", 400, NULL, 3, &Move_Task_Handle);
+    xTaskCreate(Move_Task, "Move_Task", 400, NULL, 3, &Move_Task_Handle);
 		xTaskCreate(Can_Send, "Can_Send", 256, NULL, 4, &Can_Send_Handle);
 		
 }
 
-float FinalCurrent = 0.0f;
-int16_t motorCurrentBuf[4] = {0};
 void Wheel_Task(void *pvParameters)
 {
     TickType_t last_wake_time = xTaskGetTickCount();
@@ -140,6 +135,7 @@ void Wheel_Task(void *pvParameters)
     }
 }
 
+int16_t motorCurrentBuf[4] = {0};
 void Can_Send(void *pvParameters)
 {
 		TickType_t last_wake_time = xTaskGetTickCount();
@@ -208,9 +204,13 @@ void Move_Task(void *pvParameters)
             Remote_Control.Key_Control = &RemoteData.Key;
         }
 
+				if(xSemaphoreTake(Jy61_semaphore, pdMS_TO_TICKS(200)) == pdTRUE)
+				{
+						JY61_Receive(&JY61, usart5_dma_buff, sizeof(JY61));
+				}
+				
         if(chassis_mode == AUTO)
         {
-            JY61_Receive(&JY61, Gyro_Rx_Buffer, sizeof(Gyro_Rx_Buffer));
             PID_Control2(cur_pos.x, exp_pos.x, &Pos_PID_x);
             PID_Control2(cur_pos.y, exp_pos.y, &Pos_PID_y);
             PID_Control2(cur_pos.z, exp_pos.z, &Pos_PID_z);
@@ -231,8 +231,6 @@ void Move_Task(void *pvParameters)
             chassis.exp_vel.y = Remote_Control.Ey / 2047.0f * MAX_ROBOT_VEL;
             chassis.exp_vel.z = Remote_Control.Eomega / 2047.0f * MAX_ROBOT_OMEGA;//弧度/s
         }
-				
-        vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(5));
     }
 }
 

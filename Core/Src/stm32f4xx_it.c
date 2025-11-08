@@ -30,7 +30,9 @@
 /* USER CODE BEGIN TD */
 extern UART_DataPack RemoteData;
 extern uint8_t usart4_dma_buff[30];
+extern uint8_t usart5_dma_buff[104];
 extern QueueHandle_t remote_semaphore;
+extern QueueHandle_t Jy61_semaphore;
 /* USER CODE END TD */
 
 /* Private define ------------------------------------------------------------*/
@@ -333,7 +335,12 @@ if(__HAL_UART_GET_FLAG(&huart4, UART_FLAG_IDLE) && __HAL_UART_GET_IT_SOURCE(&hua
 void UART5_IRQHandler(void)
 {
   /* USER CODE BEGIN UART5_IRQn 0 */
-
+	HAL_UART_DMAStop(&huart5);
+	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+  xSemaphoreGiveFromISR(Jy61_semaphore, &xHigherPriorityTaskWoken);
+  portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+	
+	HAL_UART_Receive_DMA(&huart5, usart5_dma_buff, sizeof(usart5_dma_buff));
   /* USER CODE END UART5_IRQn 0 */
   HAL_UART_IRQHandler(&huart5);
   /* USER CODE BEGIN UART5_IRQn 1 */
