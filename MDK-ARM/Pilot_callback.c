@@ -30,10 +30,14 @@ void SetRobotAcc_Callback(Vector3D acc)
 
 void Finished_Callback(AutopilotState state,AutoPilotReq_t *req,void* user_data)
 {
+    
+
     if (state == AUTOPILOT_STAGE_FINISH) {
         // 自动驾驶仪到达终点后的处理
+
         
     } else if (state == AUTOPILOT_STAGE_ERROR) {
         // 自动驾驶仪错误处理
+
     }
 }

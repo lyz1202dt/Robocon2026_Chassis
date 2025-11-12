@@ -13,8 +13,8 @@ void SetWheelTarget_Callback(Wheel_t *_this, float rad, float velocity, float fo
 
 void WheelReset_Callback(Wheel_t *_this)
 {
-		SteeringWheel *steeringwheel = (SteeringWheel *)_this->user_data;
-		Reset_Function(steeringwheel);
+	SteeringWheel *steeringwheel = (SteeringWheel *)_this->user_data;
+	Reset_Function(steeringwheel);
 }
 
 WheelState WheelState_Callback(Wheel_t *_this)
@@ -38,7 +38,7 @@ Vector2D GetWheelVelocity_Callback(Wheel_t *_this)
     velocity.x = pSteWhe->DriveMotor.posVelEstimateGet.velocity * VEL_TRANSFORM * 2.0f * 3.1415926f * n * wheel_radius * cosf(ANGLE2RAD(pSteWhe->currentDirection));
     velocity.y = pSteWhe->DriveMotor.posVelEstimateGet.velocity * VEL_TRANSFORM * 2.0f * 3.1415926f * n * wheel_radius * sinf(ANGLE2RAD(pSteWhe->currentDirection));
     // velocity.x = pSteWhe->DriveMotor.rpm * 60.0f * 2.0f * 3.1415926f * n * wheel_radius * cosf(ANGLE2RAD(pSteWhe->currentDirection));
-	  // velocity.y = pSteWhe->DriveMotor.rpm * 60.0f * 2.0f * 3.1415926f * n * wheel_radius * sinf(ANGLE2RAD(pSteWhe->currentDirection));
+	// velocity.y = pSteWhe->DriveMotor.rpm * 60.0f * 2.0f * 3.1415926f * n * wheel_radius * sinf(ANGLE2RAD(pSteWhe->currentDirection));
 	return velocity;
 }
 
@@ -129,10 +129,9 @@ void MinorArcDeal(SteeringWheel *motor)
 	LimitAngle(&temp);
 	motor->putoutVelocity=motor->expextVelocity*cos(ANGLE2RAD(temp));
 }
-
-void Angle_Update(SteeringWheel *motor)
+void UpdateAngle(SteeringWheel *motor)
 {
-	//float currentAngle = (float)(motor->encoder.angle_deg) / 4.0f ;	//2006减速比为36/1
+//float currentAngle = (motor->encoder.angle_deg);
 	float currentAngle = (float)(motor->SteeringMotor.Angle - motor->offset) * 10 / 4.0f / 8192.0f;	//2006减速比为36/1，这里的10其实是(360/36)
 	float actualTargetAngle = (float)(180 * ((int8_t)(currentAngle / 180.0f))) + motor->expectDirection;
 	float D_angle = AngleDiffer(actualTargetAngle, currentAngle); // 在同一周期内求旋转角
@@ -140,7 +139,6 @@ void Angle_Update(SteeringWheel *motor)
 	motor->D_angle = D_angle;
 	motor->currentDirection = currentAngle; // 更新当前角度
 }
-
 //复位函数
 void Reset_Function(SteeringWheel *pSteWhe)
 {
@@ -151,17 +149,19 @@ void Reset_Function(SteeringWheel *pSteWhe)
 	}
 	if (HAL_GPIO_ReadPin(pSteWhe->Key_GPIO_Port, pSteWhe->Key_GPIO_Pin))
 	{
-		pSteWhe->putoutDirection = pSteWhe->putoutDirection + 0.03f;
+		pSteWhe->putoutDirection = pSteWhe->putoutDirection + 0.3f;
 	}
 	else
 	{
-		pSteWhe->putoutDirection = pSteWhe->putoutDirection - 0.03f;
+		pSteWhe->putoutDirection = pSteWhe->putoutDirection - 0.3f;
 	}
 
 	if ((HAL_GPIO_ReadPin(pSteWhe->Key_GPIO_Port, pSteWhe->Key_GPIO_Pin) << 4) != (pSteWhe->ready_edge_flag & 0x10))	//如果上一次的IO电平与此次不同，那么认为复位成功
 	{
+		taskENTER_CRITICAL();
 		pSteWhe->offset = pSteWhe->SteeringMotor.Angle;
 		pSteWhe->putoutDirection = 0;
+		taskEXIT_CRITICAL();
 		pSteWhe->ready_edge_flag = pSteWhe->ready_edge_flag | 0x80;
 	}
 	pSteWhe->ready_edge_flag = pSteWhe->ready_edge_flag & (~0x10);

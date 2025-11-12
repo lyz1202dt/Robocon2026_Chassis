@@ -54,11 +54,11 @@ void WheelError_Callback(Chassis_t *_this, Wheel_t *wheel);
 Vector2D GetWheelVelocity_Callback(Wheel_t *_this);
 WheelState WheelState_Callback(Wheel_t *_this);
 void WheelReset_Callback(Wheel_t *_this);
-
+void UpdateAngle(SteeringWheel *motor);
 void LimitAngle(float* angle);
 float AngleDiffer(float angle1,float angle2);
 void MinorArcDeal(SteeringWheel *motor);
 uint8_t SteeringWheelReady(SteeringWheel *StrWhe);
 void Reset_Function(SteeringWheel *pSteWhe);
-void Angle_Update(SteeringWheel *motor);
+
 #endif

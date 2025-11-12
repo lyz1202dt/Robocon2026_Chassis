@@ -126,7 +126,7 @@ static void AutoPilotProcess(void *param)
     }
 }
 
-float AutoPilotTrajectoryPlane(AutoPilotReq_t *req, MoveDest_t *dest, float vel_limit, float acc_limit, float omega_limit, float acc_omega_limit, float run_time,MathSolver_t *solver) // 根据期望位置和约束条件计算曲线，如果不满足那么进行数值迭代尽可能找到一个可行的曲线
+float AutoPilotTrajectoryPlane(AutoPilotReq_t *req, MoveDest_t *dest, float vel_limit, float acc_limit, float omega_limit, float acc_omega_limit, float run_time, MathSolver_t *solver) // 根据期望位置和约束条件计算曲线，如果不满足那么进行数值迭代尽可能找到一个可行的曲线
 {
     PathLine_t line[3];
     set_quintic(&line[0], req->start_pos.x, req->start_vel.x, req->start_acc.x, req->target_pos.x, req->target_vel.x, req->target_acc.x,run_time);
