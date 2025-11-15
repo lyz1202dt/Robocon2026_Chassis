@@ -1,5 +1,6 @@
 #include "ForceChassis.h"
 #include "FreeRTOS.h"
+#include "FreeRTOSConfig.h"
 #include "task.h"
 #include "matrix.h"
 
@@ -115,7 +116,7 @@ uint32_t ChassisInit(Chassis_t *chassis, Wheel_t *wheel, Vector2D barycenter, fl
     chassis->Mq_data[1][2] = chassis->Mq_data[2][1] = chassis->mass * chassis->barycenter.x;
     chassis->Mq_data[2][2] = chassis->I + chassis->mass * chassis->barycenter.x * chassis->barycenter.x +chassis->mass * chassis->barycenter.y * chassis->barycenter.y;
     
-    arm_mat_init_f32(&chassis->vel_A_mat,8,3,(float*)&chassis->A_vel_data);     //构建运动学映射矩阵
+    arm_mat_init_f32(&chassis->vel_A_mat,8,3,(float*)&chassis->A_vel_data);//构建运动学映射矩阵
     for(int i=0;i<4;i++)
     {
         Vector2D pos_wheel;
@@ -123,7 +124,7 @@ uint32_t ChassisInit(Chassis_t *chassis, Wheel_t *wheel, Vector2D barycenter, fl
         float c=arm_cos_f32(pos_temp.z);
         float s=arm_sin_f32(pos_temp.z);
         
-        pos_wheel.x=c*pos_temp.x-s*pos_temp.y;      //2*2旋转矩阵，将轮子局部坐标系与车体坐标系对齐
+        pos_wheel.x=c*pos_temp.x-s*pos_temp.y;//2*2旋转矩阵，将轮子局部坐标系与车体坐标系对齐
         pos_wheel.y=s*pos_temp.x+c*pos_temp.y;
 
         chassis->A_vel_data[i*2][0]=1.0f;

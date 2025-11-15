@@ -1,0 +1,486 @@
+build:
+  generated-by: csolution version 2.12.0
+  solution: ../../../chassis.csolution.yml
+  project: ../../../chassis.cproject.yml
+  context: chassis+chassis
+  compiler: AC6
+  device: STMicroelectronics::STM32F407VETx
+  device-pack: Keil::STM32F4xx_DFP@2.17.1
+  device-books:
+    - name: ${CMSIS_PACK_ROOT}/Keil/STM32F4xx_DFP/2.17.1/Documentation/DM00031020.pdf
+      title: STM32F40x/41x/42x/43x Reference Manual
+    - name: ${CMSIS_PACK_ROOT}/Keil/STM32F4xx_DFP/2.17.1/Documentation/DM00037051.pdf
+      title: STM32F405/407 Data Sheet
+    - name: ${CMSIS_PACK_ROOT}/Keil/STM32F4xx_DFP/2.17.1/Documentation/DM00037591.pdf
+      title: STM32F40x/41x Errata Sheet
+    - name: ${CMSIS_PACK_ROOT}/Keil/STM32F4xx_DFP/2.17.1/Documentation/dui0553a_cortex_m4_dgug.pdf
+      title: Cortex-M4 Generic User Guide
+    - name: ${CMSIS_PACK_ROOT}/Keil/STM32F4xx_DFP/2.17.1/Documentation/DM00105879.pdf
+      title: STM32F4xx HAL Drivers
+    - name: ${CMSIS_PACK_ROOT}/Keil/STM32F4xx_DFP/2.17.1/Documentation/DM00104712.pdf
+      title: STM32CubeMX User Manual
+  dbgconf:
+    - file: ../../../.cmsis/chassis+chassis.dbgconf
+      version: 0.0.0
+  processor:
+    endian: little
+    fpu: sp
+    core: Cortex-M4
+  packs:
+    - pack: ARM::CMSIS@6.2.0
+      path: ${CMSIS_PACK_ROOT}/ARM/CMSIS/6.2.0
+    - pack: Keil::STM32F4xx_DFP@2.17.1
+      path: ${CMSIS_PACK_ROOT}/Keil/STM32F4xx_DFP/2.17.1
+  optimize: debug
+  debug: on
+  misc:
+    ASM:
+      - -masm=auto
+    C:
+      - -std=c99
+      - -fno-rtti
+      - -funsigned-char
+      - -fshort-enums
+      - -fshort-wchar
+      - -ffunction-sections
+      - -Wno-packed
+      - -Wno-missing-variable-declarations
+      - -Wno-missing-prototypes
+      - -Wno-missing-noreturn
+      - -Wno-sign-conversion
+      - -Wno-nonportable-include-path
+      - -Wno-reserved-id-macro
+      - -Wno-unused-macros
+      - -Wno-documentation-unknown-command
+      - -Wno-documentation
+      - -Wno-license-management
+      - -Wno-parentheses-equality
+    CPP:
+      - -xc++
+      - -std=c++17
+      - -fno-exceptions
+      - -fno-rtti
+      - -funsigned-char
+      - -fshort-enums
+      - -fshort-wchar
+      - -ffunction-sections
+      - -Wno-packed
+      - -Wno-missing-variable-declarations
+      - -Wno-missing-prototypes
+      - -Wno-missing-noreturn
+      - -Wno-sign-conversion
+      - -Wno-nonportable-include-path
+      - -Wno-reserved-id-macro
+      - -Wno-unused-macros
+      - -Wno-documentation-unknown-command
+      - -Wno-documentation
+      - -Wno-license-management
+      - -Wno-parentheses-equality
+    Link:
+      - --map
+      - --load_addr_map_info
+      - --xref
+      - --callgraph
+      - --symbols
+      - --info sizes
+      - --info totals
+      - --info unused
+      - --info veneers
+      - --strict
+      - --summary_stderr
+      - --info summarysizes
+  define:
+    - USE_HAL_DRIVER
+    - STM32F407xx
+    - STM32F407xx
+    - _RTE_
+  define-asm:
+    - STM32F407xx
+    - _RTE_
+  add-path:
+    - ../../../../Core/Inc
+    - ../../../../Drivers/STM32F4xx_HAL_Driver/Inc
+    - ../../../../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy
+    - ../../../../Middlewares/Third_Party/FreeRTOS/Source/include
+    - ../../../../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
+    - ../../../../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F
+    - ../../../../Drivers/CMSIS/Device/ST/STM32F4xx/Include
+    - ../../../../Drivers/CMSIS/Include
+    - ../../../../BaseLib
+    - ../../../../Bsp
+    - ../../../../Middlewares/ST/ARM/DSP/Inc
+    - ../../../../Eigen
+    - ../../../../Matrix
+    - ../../..
+    - ../../../../USB_DEVICE/App
+    - ../../../../USB_DEVICE/Target
+    - ../../../../Middlewares/ST/STM32_USB_Device_Library/Core/Inc
+    - ../../../../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc
+    - ../../../RTE/_chassis
+    - ${CMSIS_PACK_ROOT}/ARM/CMSIS/6.2.0/CMSIS/Core/Include
+    - ${CMSIS_PACK_ROOT}/Keil/STM32F4xx_DFP/2.17.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include
+  add-path-asm:
+    - ../../../RTE/_chassis
+    - ${CMSIS_PACK_ROOT}/ARM/CMSIS/6.2.0/CMSIS/Core/Include
+    - ${CMSIS_PACK_ROOT}/Keil/STM32F4xx_DFP/2.17.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include
+  output-dirs:
+    intdir: ../../../tmp
+    outdir: .
+    rtedir: ../../../RTE
+  output:
+    - type: elf
+      file: chassis.axf
+  components:
+    - component: ARM::CMSIS:CORE@6.1.1
+      condition: ARMv6_7_8-M Device
+      from-pack: ARM::CMSIS@6.2.0
+      selected-by: ARM::CMSIS:CORE
+      files:
+        - file: ${CMSIS_PACK_ROOT}/ARM/CMSIS/6.2.0/CMSIS/Core/Include
+          category: include
+          version: 6.1.1
+        - file: ${CMSIS_PACK_ROOT}/ARM/CMSIS/6.2.0/CMSIS/Core/Include/tz_context.h
+          category: header
+          version: 6.1.1
+        - file: ${CMSIS_PACK_ROOT}/ARM/CMSIS/6.2.0/CMSIS/Core/Template/ARMv8-M/main_s.c
+          category: sourceC
+          attr: template
+          version: 1.1.1
+          select: Secure mode 'main' module for ARMv8-M
+        - file: ${CMSIS_PACK_ROOT}/ARM/CMSIS/6.2.0/CMSIS/Core/Template/ARMv8-M/tz_context.c
+          category: sourceC
+          attr: template
+          version: 1.1.1
+          select: RTOS Context Management (TrustZone for ARMv8-M)
+        - file: ${CMSIS_PACK_ROOT}/ARM/CMSIS/6.2.0/CMSIS/Documentation/html/Core/index.html
+          category: doc
+          version: 6.1.1
+  linker:
+    script: ../../../chassis_chassis.sct
+  groups:
+    - group: Application/MDK-ARM
+      files:
+        - file: ../../../startup_stm32f407xx.s
+          category: sourceAsm
+    - group: Drivers/STM32F4xx_HAL_Driver
+      files:
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c
+          category: sourceC
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c
+          category: sourceC
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd_ex.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c
+          category: sourceC
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c
+          category: sourceC
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c
+          category: sourceC
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c
+          category: sourceC
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.c
+          category: sourceC
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c
+          category: sourceC
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c
+          category: sourceC
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c
+          category: sourceC
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c
+          category: sourceC
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c
+          category: sourceC
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c
+          category: sourceC
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c
+          category: sourceC
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c
+          category: sourceC
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c
+          category: sourceC
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c
+          category: sourceC
+    - group: Drivers/CMSIS
+      files:
+        - file: ../../../../Core/Src/system_stm32f4xx.c
+          category: sourceC
+    - group: Middlewares/FreeRTOS
+      files:
+        - file: ../../../../Middlewares/Third_Party/FreeRTOS/Source/croutine.c
+          category: sourceC
+        - file: ../../../../Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
+          category: sourceC
+        - file: ../../../../Middlewares/Third_Party/FreeRTOS/Source/list.c
+          category: sourceC
+        - file: ../../../../Middlewares/Third_Party/FreeRTOS/Source/queue.c
+          category: sourceC
+        - file: ../../../../Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c
+          category: sourceC
+        - file: ../../../../Middlewares/Third_Party/FreeRTOS/Source/tasks.c
+          category: sourceC
+        - file: ../../../../Middlewares/Third_Party/FreeRTOS/Source/timers.c
+          category: sourceC
+        - file: ../../../../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c
+          category: sourceC
+        - file: ../../../../Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
+          category: sourceC
+        - file: ../../../../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/port.c
+          category: sourceC
+    - group: BaseLib
+      files:
+        - file: ../../../../BaseLib/CANDrive.c
+          category: sourceC
+        - file: ../../../../BaseLib/CANDrive.h
+          category: header
+        - file: ../../../../BaseLib/motor.c
+          category: sourceC
+        - file: ../../../../BaseLib/motor.h
+          category: header
+        - file: ../../../../BaseLib/RMLibHead.h
+          category: header
+        - file: ../../../../Bsp/bsp_dwt.c
+          category: sourceC
+        - file: ../../../../Bsp/bsp_dwt.h
+          category: header
+        - file: ../../../../BaseLib/Odrive.c
+          category: sourceC
+        - file: ../../../../BaseLib/Odrive.h
+          category: header
+        - file: ../../../../BaseLib/Canbuffer.c
+          category: sourceC
+        - file: ../../../../BaseLib/Canbuffer.h
+          category: header
+        - file: ../../../../BaseLib/slope.c
+          category: sourceC
+        - file: ../../../../BaseLib/slope.h
+          category: header
+        - file: ../../../../BaseLib/WatchDog2.c
+          category: sourceC
+        - file: ../../../../BaseLib/WatchDog2.h
+          category: header
+        - file: ../../../../BaseLib/list.c
+          category: sourceC
+        - file: ../../../../BaseLib/list.h
+          category: header
+        - file: ../../../../BaseLib/PID_old.c
+          category: sourceC
+        - file: ../../../../BaseLib/PID_old.h
+          category: header
+        - file: ../../../../BaseLib/STP-23L.c
+          category: sourceC
+        - file: ../../../../BaseLib/STP-23L.h
+          category: header
+        - file: ../../../../BaseLib/AutoPilot.c
+          category: sourceC
+        - file: ../../../../BaseLib/AutoPilot.h
+          category: header
+        - file: ../../../../BaseLib/ForceChassis.c
+          category: sourceC
+        - file: ../../../../Matrix/svd.c
+          category: sourceC
+        - file: ../../../../Matrix/svd.h
+          category: header
+        - file: ../../../../BaseLib/ForceChassis.h
+          category: header
+        - file: ../../../drive_callback.c
+          category: sourceC
+        - file: ../../../drive_callback.h
+          category: header
+        - file: ../../../../BaseLib/vesc.c
+          category: sourceC
+        - file: ../../../../BaseLib/vesc.h
+          category: header
+        - file: ../../../../BaseLib/Task_Init.c
+          category: sourceC
+        - file: ../../../../BaseLib/Task_Init.h
+          category: header
+        - file: ../../../Pilot_callback.c
+          category: sourceC
+        - file: ../../../Pilot_callback.h
+          category: header
+        - file: ../../../../BaseLib/Vector.h
+          category: header
+        - file: ../../../../BaseLib/JY61.c
+          category: sourceC
+        - file: ../../../../BaseLib/JY61.h
+          category: header
+        - file: ../../../../BaseLib/WatchDog.c
+          category: sourceC
+        - file: ../../../../BaseLib/WatchDog.h
+          category: header
+        - file: ../../../../BaseLib/encoder.c
+          category: sourceC
+        - file: ../../../../BaseLib/encoder.h
+          category: header
+        - file: ../../../../BaseLib/AS5047.c
+          category: sourceC
+        - file: ../../../../BaseLib/AS5047.h
+          category: header
+    - group: Application/User/Core
+      optimize: none
+      misc:
+        CPP:
+          - -xc++
+          - -fno-exceptions
+      files:
+        - file: ../../../../Core/Src/main.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../Core/Src/gpio.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../Core/Src/freertos.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../Core/Src/can.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../Core/Src/dma.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../Core/Src/spi.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../Core/Src/tim.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../Core/Src/usart.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../Core/Src/stm32f4xx_it.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../Core/Src/stm32f4xx_hal_msp.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../Core/Src/stm32f4xx_hal_timebase_tim.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+    - group: Matrix
+      files:
+        - file: ../../../../Matrix/matrix.c
+          category: sourceC
+        - file: ../../../../Matrix/matrix.h
+          category: header
+    - group: Application/User/USB_DEVICE/App
+      optimize: none
+      misc:
+        CPP:
+          - -xc++
+          - -fno-exceptions
+      files:
+        - file: ../../../../USB_DEVICE/App/usb_device.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../USB_DEVICE/App/usbd_desc.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../USB_DEVICE/App/usbd_cdc_if.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+    - group: Application/User/USB_DEVICE/Target
+      optimize: none
+      misc:
+        CPP:
+          - -xc++
+          - -fno-exceptions
+      files:
+        - file: ../../../../USB_DEVICE/Target/usbd_conf.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+    - group: Middlewares/USB_Device_Library
+      optimize: none
+      misc:
+        CPP:
+          - -xc++
+          - -fno-exceptions
+      files:
+        - file: ../../../../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+        - file: ../../../../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
+          category: sourceC
+          misc:
+            CPP:
+              - -xc++
+    - group: Middlewares/Library/DSP Library/DSP Library
+      optimize: none
+      misc:
+        CPP:
+          - -xc++
+          - -fno-exceptions
+      files:
+        - file: ../../../../Middlewares/ST/ARM/DSP/Lib/arm_cortexM4lf_math.lib
+          category: library
+  constructed-files:
+    - file: ../../../RTE/_chassis/RTE_Components.h
+      category: header
+  licenses:
+    - license: <unknown>
+      packs:
+        - pack: Keil::STM32F4xx_DFP@2.17.1
+    - license: Apache-2.0
+      packs:
+        - pack: ARM::CMSIS@6.2.0
+      components:
+        - component: ARM::CMSIS:CORE@6.1.1

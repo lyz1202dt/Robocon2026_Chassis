@@ -1,0 +1,37 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "D:/Keil_Project/Robocon2026_Chassis_Frame/MDK-ARM/tmp/CMakeFiles/chassis+chassis-database"
+		},
+		{
+			"file" : "D:/Keil_Project/Robocon2026_Chassis_Frame/MDK-ARM/tmp/CMakeFiles/chassis+chassis-database.rule"
+		},
+		{
+			"file" : "D:/Keil_Project/Robocon2026_Chassis_Frame/MDK-ARM/tmp/chassis+chassis/src/chassis+chassis-stamp/chassis+chassis-database.rule"
+		},
+		{
+			"file" : "D:/Keil_Project/Robocon2026_Chassis_Frame/MDK-ARM/tmp/chassis+chassis/src/chassis+chassis-stamp/chassis+chassis-configure.rule"
+		},
+		{
+			"file" : "D:/Keil_Project/Robocon2026_Chassis_Frame/MDK-ARM/tmp/chassis+chassis/src/chassis+chassis-stamp/chassis+chassis-patch.rule"
+		},
+		{
+			"file" : "D:/Keil_Project/Robocon2026_Chassis_Frame/MDK-ARM/tmp/chassis+chassis/src/chassis+chassis-stamp/chassis+chassis-update.rule"
+		},
+		{
+			"file" : "D:/Keil_Project/Robocon2026_Chassis_Frame/MDK-ARM/tmp/chassis+chassis/src/chassis+chassis-stamp/chassis+chassis-download.rule"
+		},
+		{
+			"file" : "D:/Keil_Project/Robocon2026_Chassis_Frame/MDK-ARM/tmp/chassis+chassis/src/chassis+chassis-stamp/chassis+chassis-mkdir.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"chassis+chassis"
+		],
+		"name" : "chassis+chassis-database"
+	}
+}

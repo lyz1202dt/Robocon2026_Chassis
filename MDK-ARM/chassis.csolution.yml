@@ -1,0 +1,14 @@
+solution:
+  created-by: uv2csolution@1.6.0
+  created-for: CMSIS-Toolbox@2.12.0
+  compiler: AC6
+  target-types:
+    - type: chassis
+      device: STM32F407VETx
+      optimize: debug
+      target-set:
+        - set:
+          images:
+            - project-context: chassis
+  projects:
+    - project: chassis.cproject.yml

@@ -1,0 +1,293 @@
+project:
+  packs:
+    - pack: ARM::CMSIS@^6.1.0
+    - pack: Keil::STM32F4xx_DFP@^2.15.0
+    - pack: ARM::CMSIS-NN@^4.0.0
+    - pack: ARM::CMSIS-DSP@^1.10.1
+  setups:
+    - setup: Options for chassis
+      processor:
+        fpu: sp
+      add-path:
+        - ../Core/Inc
+        - ../Drivers/STM32F4xx_HAL_Driver/Inc
+        - ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy
+        - ../Middlewares/Third_Party/FreeRTOS/Source/include
+        - ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS
+        - ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F
+        - ../Drivers/CMSIS/Device/ST/STM32F4xx/Include
+        - ../Drivers/CMSIS/Include
+        - ../BaseLib
+        - ../Bsp
+        - ../Middlewares/ST/ARM/DSP/Inc
+        - ../Eigen
+        - ../Matrix
+        - .
+        - ../USB_DEVICE/App
+        - ../USB_DEVICE/Target
+        - ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc
+        - ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc
+      debug: "on"
+      define:
+        - USE_HAL_DRIVER
+        - STM32F407xx
+      misc:
+        - C:
+            - -std=c99
+          C-CPP:
+            - -fno-rtti
+            - -funsigned-char
+            - -fshort-enums
+            - -fshort-wchar
+            - -ffunction-sections
+            - -Wno-packed
+            - -Wno-missing-variable-declarations
+            - -Wno-missing-prototypes
+            - -Wno-missing-noreturn
+            - -Wno-sign-conversion
+            - -Wno-nonportable-include-path
+            - -Wno-reserved-id-macro
+            - -Wno-unused-macros
+            - -Wno-documentation-unknown-command
+            - -Wno-documentation
+            - -Wno-license-management
+            - -Wno-parentheses-equality
+          CPP:
+            - -xc++
+            - -std=c++17
+            - -fno-exceptions
+          ASM:
+            - -masm=auto
+          Link:
+            - --map
+            - --load_addr_map_info
+            - --xref
+            - --callgraph
+            - --symbols
+            - --info sizes
+            - --info totals
+            - --info unused
+            - --info veneers
+            - --strict
+            - --summary_stderr
+            - --info summarysizes
+  linker:
+    - script: chassis_chassis.sct
+  groups:
+    - group: Application/MDK-ARM
+      files:
+        - file: startup_stm32f407xx.s
+    - group: Drivers/STM32F4xx_HAL_Driver
+      files:
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd_ex.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.c
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c
+    - group: Drivers/CMSIS
+      files:
+        - file: ../Core/Src/system_stm32f4xx.c
+    - group: Middlewares/FreeRTOS
+      files:
+        - file: ../Middlewares/Third_Party/FreeRTOS/Source/croutine.c
+        - file: ../Middlewares/Third_Party/FreeRTOS/Source/event_groups.c
+        - file: ../Middlewares/Third_Party/FreeRTOS/Source/list.c
+        - file: ../Middlewares/Third_Party/FreeRTOS/Source/queue.c
+        - file: ../Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c
+        - file: ../Middlewares/Third_Party/FreeRTOS/Source/tasks.c
+        - file: ../Middlewares/Third_Party/FreeRTOS/Source/timers.c
+        - file: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c
+        - file: ../Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
+        - file: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/port.c
+    - group: BaseLib
+      files:
+        - file: ../BaseLib/CANDrive.c
+        - file: ../BaseLib/CANDrive.h
+        - file: ../BaseLib/motor.c
+        - file: ../BaseLib/motor.h
+        - file: ../BaseLib/RMLibHead.h
+        - file: ../Bsp/bsp_dwt.c
+        - file: ../Bsp/bsp_dwt.h
+        - file: ../BaseLib/Odrive.c
+        - file: ../BaseLib/Odrive.h
+        - file: ../BaseLib/Canbuffer.c
+        - file: ../BaseLib/Canbuffer.h
+        - file: ../BaseLib/slope.c
+        - file: ../BaseLib/slope.h
+        - file: ../BaseLib/WatchDog2.c
+        - file: ../BaseLib/WatchDog2.h
+        - file: ../BaseLib/list.c
+        - file: ../BaseLib/list.h
+        - file: ../BaseLib/PID_old.c
+        - file: ../BaseLib/PID_old.h
+        - file: ../BaseLib/STP-23L.c
+        - file: ../BaseLib/STP-23L.h
+        - file: ../BaseLib/AutoPilot.c
+        - file: ../BaseLib/AutoPilot.h
+        - file: ../BaseLib/ForceChassis.c
+        - file: ../Matrix/svd.c
+        - file: ../Matrix/svd.h
+        - file: ../BaseLib/ForceChassis.h
+        - file: drive_callback.c
+        - file: drive_callback.h
+        - file: ../BaseLib/vesc.c
+        - file: ../BaseLib/vesc.h
+        - file: ../BaseLib/Task_Init.c
+        - file: ../BaseLib/Task_Init.h
+        - file: Pilot_callback.c
+        - file: Pilot_callback.h
+        - file: ../BaseLib/Vector.h
+        - file: ../BaseLib/JY61.c
+        - file: ../BaseLib/JY61.h
+        - file: ../BaseLib/WatchDog.c
+        - file: ../BaseLib/WatchDog.h
+        - file: ../BaseLib/encoder.c
+        - file: ../BaseLib/encoder.h
+        - file: ../BaseLib/AS5047.c
+        - file: ../BaseLib/AS5047.h
+    - group: Application/User/Core
+      optimize: none
+      misc:
+        - CPP:
+            - -xc++
+            - -fno-exceptions
+      files:
+        - file: ../Core/Src/main.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Core/Src/gpio.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Core/Src/freertos.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Core/Src/can.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Core/Src/dma.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Core/Src/spi.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Core/Src/tim.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Core/Src/usart.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Core/Src/stm32f4xx_it.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Core/Src/stm32f4xx_hal_msp.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Core/Src/stm32f4xx_hal_timebase_tim.c
+          misc:
+            - CPP:
+                - -xc++
+    - group: Matrix
+      files:
+        - file: ../Matrix/matrix.c
+        - file: ../Matrix/matrix.h
+    - group: Application/User/USB_DEVICE/App
+      optimize: none
+      misc:
+        - CPP:
+            - -xc++
+            - -fno-exceptions
+      files:
+        - file: ../USB_DEVICE/App/usb_device.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../USB_DEVICE/App/usbd_desc.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../USB_DEVICE/App/usbd_cdc_if.c
+          misc:
+            - CPP:
+                - -xc++
+    - group: Application/User/USB_DEVICE/Target
+      optimize: none
+      misc:
+        - CPP:
+            - -xc++
+            - -fno-exceptions
+      files:
+        - file: ../USB_DEVICE/Target/usbd_conf.c
+          misc:
+            - CPP:
+                - -xc++
+    - group: Middlewares/USB_Device_Library
+      optimize: none
+      misc:
+        - CPP:
+            - -xc++
+            - -fno-exceptions
+      files:
+        - file: ../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c
+          misc:
+            - CPP:
+                - -xc++
+        - file: ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
+          misc:
+            - CPP:
+                - -xc++
+    - group: Middlewares/Library/DSP Library/DSP Library
+      optimize: none
+      misc:
+        - CPP:
+            - -xc++
+            - -fno-exceptions
+      files:
+        - file: ../Middlewares/ST/ARM/DSP/Lib/arm_cortexM4lf_math.lib
+  components:
+    - component: ARM::CMSIS:CORE

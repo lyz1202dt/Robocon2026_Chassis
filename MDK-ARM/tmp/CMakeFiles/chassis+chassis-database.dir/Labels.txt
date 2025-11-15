@@ -1,0 +1,11 @@
+# Target labels
+ chassis+chassis
+# Source files and their labels
+D:/Keil_Project/Robocon2026_Chassis_Frame/MDK-ARM/tmp/CMakeFiles/chassis+chassis-database
+D:/Keil_Project/Robocon2026_Chassis_Frame/MDK-ARM/tmp/CMakeFiles/chassis+chassis-database.rule
+D:/Keil_Project/Robocon2026_Chassis_Frame/MDK-ARM/tmp/chassis+chassis/src/chassis+chassis-stamp/chassis+chassis-database.rule
+D:/Keil_Project/Robocon2026_Chassis_Frame/MDK-ARM/tmp/chassis+chassis/src/chassis+chassis-stamp/chassis+chassis-configure.rule
+D:/Keil_Project/Robocon2026_Chassis_Frame/MDK-ARM/tmp/chassis+chassis/src/chassis+chassis-stamp/chassis+chassis-patch.rule
+D:/Keil_Project/Robocon2026_Chassis_Frame/MDK-ARM/tmp/chassis+chassis/src/chassis+chassis-stamp/chassis+chassis-update.rule
+D:/Keil_Project/Robocon2026_Chassis_Frame/MDK-ARM/tmp/chassis+chassis/src/chassis+chassis-stamp/chassis+chassis-download.rule
+D:/Keil_Project/Robocon2026_Chassis_Frame/MDK-ARM/tmp/chassis+chassis/src/chassis+chassis-stamp/chassis+chassis-mkdir.rule

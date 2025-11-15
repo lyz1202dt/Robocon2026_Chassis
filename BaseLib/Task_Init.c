@@ -67,7 +67,7 @@ void Task_Init(void)
     Vector2D barycenter = {0, 0};
     chassis.wheel_err_cb = WheelError_Callback;
     ChassisInit(&chassis, wheelArray, barycenter, 10.0f, 1.25f, 0.001f, 4, 400, 2);
-	
+    
 		xTaskCreate(Wheel_Task, "wheel_task1", 256, &wheelArray[0], 4, &Wheel_Handles[0]);
 		xTaskCreate(Wheel_Task, "wheel_task2", 256, &wheelArray[1], 4, &Wheel_Handles[1]);
 		xTaskCreate(Wheel_Task, "wheel_task3", 256, &wheelArray[2], 4, &Wheel_Handles[2]);

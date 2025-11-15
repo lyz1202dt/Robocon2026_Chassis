@@ -1,0 +1,19 @@
+build-idx:
+  generated-by: csolution version 2.12.0
+  csolution: chassis.csolution.yml
+  cbuild-run: out/chassis+chassis.cbuild-run.yml
+  tmpdir: tmp
+  cprojects:
+    - cproject: chassis.cproject.yml
+  cbuilds:
+    - cbuild: out/chassis/chassis/chassis+chassis.cbuild.yml
+      project: chassis
+      configuration: +chassis
+      messages:
+        info:
+          - chassis.cbuild-pack.yml - file is already up-to-date
+          - chassis+chassis.cbuild-run.yml - file is already up-to-date
+          - chassis+chassis.cbuild.yml - file generated successfully
+      packs-unused:
+        - pack: ARM::CMSIS-DSP@1.16.2
+        - pack: ARM::CMSIS-NN@4.1.0
