@@ -35,14 +35,18 @@ void Task_Init(void)
     steeringWheelArray[3].Key_GPIO_Port = GPIOA;
     steeringWheelArray[3].Key_GPIO_Pin = GPIO_PIN_7;
 
-    wheelArray[0].pos.x = -0.32f;
-    wheelArray[0].pos.y =  0.32f;
+    wheelArray[0].pos.x =  0.32f;
+    wheelArray[0].pos.y =  0.32f; 
+    wheelArray[0].pos.z =  PI/2.0f;
     wheelArray[1].pos.x =  0.32f;
-    wheelArray[1].pos.y =  0.32f;
-    wheelArray[2].pos.x =  0.32f;
+    wheelArray[1].pos.y = -0.32f;
+    wheelArray[0].pos.z =  PI/2.0f;
+    wheelArray[2].pos.x = -0.32f;
     wheelArray[2].pos.y = -0.32f;
+    wheelArray[0].pos.z =  PI/2.0f;
     wheelArray[3].pos.x = -0.32f;
-    wheelArray[3].pos.y = -0.32f;
+    wheelArray[3].pos.y =  0.32f;
+    wheelArray[0].pos.z =  PI/2.0f;
     for(int i = 0; i < 4; i++)
     {
         wheelArray[i].pos.z = 0.0f;
@@ -66,7 +70,7 @@ void Task_Init(void)
 		
     Vector2D barycenter = {0, 0};
     chassis.wheel_err_cb = WheelError_Callback;
-    ChassisInit(&chassis, wheelArray, barycenter, 10.0f, 1.25f, 0.001f, 4, 400, 2);
+    ChassisInit(&chassis, wheelArray, barycenter, 10.0f, 1.25f, 0.00001f, 4, 400, 2);
     
 		xTaskCreate(Wheel_Task, "wheel_task1", 256, &wheelArray[0], 4, &Wheel_Handles[0]);
 		xTaskCreate(Wheel_Task, "wheel_task2", 256, &wheelArray[1], 4, &Wheel_Handles[1]);
@@ -195,7 +199,7 @@ void Move_Task(void *pvParameters)
         {
             memcpy(&RemoteData, usart4_dma_buff, sizeof(RemoteData));
             UpdateKey(&Remote_Control);
-            Remote_Control.Ex = RemoteData.rocker[1];
+            Remote_Control.Ex = - RemoteData.rocker[1];
             Remote_Control.Ey = RemoteData.rocker[0];
             Remote_Control.Eomega = RemoteData.rocker[2];
             Remote_Control.mode = RemoteData.rocker[3];

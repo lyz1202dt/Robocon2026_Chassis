@@ -8,7 +8,7 @@ void SetWheelTarget_Callback(Wheel_t *_this, float rad, float velocity, float fo
     SteeringWheel *steeringwheel = (SteeringWheel *)_this->user_data;
     steeringwheel->expectDirection = RAD2ANGLE(rad);
     steeringwheel->expextVelocity = velocity;
-		steeringwheel->expextForce  = force * n * wheel_radius * (2.0f * PI * KV / 60.0f) * cosf(ANGLE2RAD(steeringwheel->putoutDirection - steeringwheel->currentDirection));
+	steeringwheel->expextForce  = force * n * wheel_radius * (2.0f * PI * KV / 60.0f) * cosf(ANGLE2RAD(steeringwheel->putoutDirection - steeringwheel->currentDirection));
 }
 
 void WheelReset_Callback(Wheel_t *_this)

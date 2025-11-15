@@ -4,12 +4,12 @@
 #include "task.h"
 #include "matrix.h"
 
+float velocity[8] = {0};
+
 void ChassisCalculateProcess(void *param)
 {
     Chassis_t *chassis = (Chassis_t *)param;
     float force[8];
-    float velocity[8];
-
     float robot_force[3];
 
     float cur_vel[8][1];        //底盘当前速度向量
@@ -67,7 +67,7 @@ void ChassisCalculateProcess(void *param)
             exp_vel[i] = sqrtf(velocity[2 * i] * velocity[2 * i] + velocity[2 * i + 1] * velocity[2 * i + 1]);
             if (exp_vel[i] > chassis->dead_zone) // 防止奇点
             {
-                exp_dir[i] = atan2f(chassis->exp_vel.y, chassis->exp_vel.x);
+                exp_dir[i] = atan2f(velocity[2 * i + 1], velocity[2 * i]);
                 torque_projection = (velocity[2 * i] * force[2 * i] + velocity[2 * i + 1] * force[2 * i + 1]) / exp_vel[i];
             }
             else
@@ -107,7 +107,7 @@ uint32_t ChassisInit(Chassis_t *chassis, Wheel_t *wheel, Vector2D barycenter, fl
     chassis->I = I;
     chassis->dead_zone = dead_zone;
     chassis->update_dt_ms = update_dt;
-
+		
     //数学映射矩阵初始化
     arm_mat_init_f32(&chassis->Mq_mat, 3, 3, (float*)chassis->Mq_data); // 构建惯性矩阵
     chassis->Mq_data[1][1] = chassis->Mq_data[0][0] = chassis->mass;
