@@ -77,7 +77,7 @@ void Task_Init(void)
 		xTaskCreate(Wheel_Task, "wheel_task3", 256, &wheelArray[2], 4, &Wheel_Handles[2]);
 		xTaskCreate(Wheel_Task, "wheel_task4", 256, &wheelArray[3], 4, &Wheel_Handles[3]);
 		
-    xTaskCreate(Move_Task, "Move_Task", 200, NULL, 5, &Move_Task_Handle);
+    xTaskCreate(Move_Task, "Move_Task", 200, NULL, 5, &Move_Task_Handle);//遥控器任务
 		xTaskCreate(Can_Send, "Can_Send", 200, NULL, 4, &Can_Send_Handle);
 		
 }
