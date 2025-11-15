@@ -4,7 +4,7 @@
 #include "task.h"
 #include "matrix.h"
 
-float velocity[8] = {0};
+float velocity[8];
 
 void ChassisCalculateProcess(void *param)
 {
@@ -107,7 +107,7 @@ uint32_t ChassisInit(Chassis_t *chassis, Wheel_t *wheel, Vector2D barycenter, fl
     chassis->I = I;
     chassis->dead_zone = dead_zone;
     chassis->update_dt_ms = update_dt;
-		
+
     //数学映射矩阵初始化
     arm_mat_init_f32(&chassis->Mq_mat, 3, 3, (float*)chassis->Mq_data); // 构建惯性矩阵
     chassis->Mq_data[1][1] = chassis->Mq_data[0][0] = chassis->mass;

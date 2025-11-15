@@ -12,7 +12,6 @@ build-idx:
       messages:
         info:
           - chassis.cbuild-pack.yml - file is already up-to-date
-          - "RTE Model reports:\nConstructed file D:/Keil_Project/Robocon2026_Chassis_Frame/MDK-ARM/RTE/_chassis/RTE_Components.h was recreated"
           - chassis+chassis.cbuild-run.yml - file is already up-to-date
           - chassis+chassis.cbuild.yml - file is already up-to-date
       packs-unused:
